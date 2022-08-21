@@ -1,25 +1,18 @@
 <template>
-  <UserHome/>
+  <UserFrame/>
 </template>
 
 <script>
-import UserHome from './components/user/userHome.vue'
+import UserFrame from './components/userFrame.vue'
 
 export default {
   name: 'App',
   components: {
-    UserHome
-},
+    UserFrame,
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
