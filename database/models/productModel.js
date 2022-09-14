@@ -15,16 +15,18 @@ export const getProducts = (result) => {
 };
 
 export const getProductsByCat = (category,result) => {
-  db.query("SELECT * FROM product WHERE merchantCategory = ?",
-  [category],
-   (err, results) => {
-    if (err) {
-      console.log(err);
-      result(err, null);
-    } else {
-      result(null, results);
+  db.query(
+    "SELECT * FROM product WHERE merchantCategory = ?",
+    [category],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        result(err, null);
+      } else {
+        result(null, results);
+      }
     }
-  });
+  );
 };
 
 //get single product
@@ -82,3 +84,4 @@ export const deleteProductById = (id, result) => {
     }
   });
 };
+

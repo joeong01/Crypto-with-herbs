@@ -1,15 +1,15 @@
 import { createRouter, createWebHistory} from 'vue-router';
-import UserHome from '../components/userHome.vue'
-import UserProduct from '../components/userProduct.vue'
-import UserBlog from '../components/userBlog.vue'
-import LogIn from '../components/LogIn.vue'
+import UserHome from '../components/user/userHome.vue'
+import UserProduct from '../components/user/userProduct.vue'
+import UserBlog from '../components/user/userBlog.vue'
+import LogIn from '../components/user/LogIn.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import AdminFrame from '../components/adminFrame.vue'
+import AdminFrame from '../components/admin/adminFrame.vue'
 
-import AboutUS from '../components/aboutUs.vue'
+import AboutUS from '../components/user/aboutUs.vue'
 
 
 const routes = [

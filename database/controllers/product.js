@@ -30,8 +30,8 @@ export const showProductById = (req, res) => {
   });
 };
 
-export const showProductsByCat = (req,res)=>{
-  getProductsByCat(req, (err, results) => {
+export const showProductsByCat = (req, res) => {
+  getProductsByCat( req , (err, results) => {
     if (err) {
       res.send(err);
     } else {
