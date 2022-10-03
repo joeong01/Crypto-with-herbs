@@ -3,6 +3,7 @@ import UserHome from '../components/user/userHome.vue'
 import UserProduct from '../components/user/userProduct.vue'
 import UserBlog from '../components/user/userBlog.vue'
 import LogIn from '../components/user/LogIn.vue'
+import Cart from '../components/user/userCart.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -42,6 +43,11 @@ const routes = [
         path: '/LogIn',
         name: 'LogIn',
         component: LogIn,
+    },
+    {
+        path: '/cart:id',
+        name: 'Cart',
+        component: Cart,
     }
 
 ];

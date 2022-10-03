@@ -11,15 +11,18 @@
         </ul>
       </nav>
     </div>
-    <div class="page" style="width:20%;">
+    <div class="page" style="width:20%;" v-if="logged">
       <nav class="page_menu page__custom-settings menu">
         <ul class="menu__list r-list">
-          <div v-if="logged" >
-            <li class="menu__group"><a href="" @click="openDialog" class="menu__link r-link text-underlined">Cart</a></li>
-          </div>
-          <div v-else>
-            <li class="menu__group"><a href="/LogIn" class="menu__link r-link text-underlined">Connect</a></li>
-          </div>
+          <li class="menu__group"><a href="/cart" class="menu__link r-link text-underlined">Cart</a></li>
+          <li class="menu__group"><a href="" class="menu__link r-link text-underlined">Disconnect</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="page" style="width:20%;" v-else>
+      <nav class="page_menu page__custom-settings menu">
+        <ul class="menu__list r-list">
+          <li class="menu__group"><a href="/LogIn" class="menu__link r-link text-underlined">Connect</a></li>
         </ul>
       </nav>
     </div>
@@ -47,26 +50,33 @@
       return{
         id: " ",
         logged: false,
+        reloaded: '1',
       }
     },
     created(){
       this.getID();
     },
+    mounted(){
+      if (localStorage.getItem('reloaded')) {
+        localStorage.removeItem('reloaded');
+      } else {
+          localStorage.setItem('reloaded', '1');
+          location.reload();
+      }
+    },
     methods:{
       async getID(){
         try{
           this.id = await window.ethereum.request({method: "eth_accounts"});
-          console.log(this.id);
 
-          if(this.id != " "){
+          if(this.id.length > 0){
             this.logged = true;
-            console.log(this.logged);
           }
         }
         catch (err) {
           console.log(err); 
         }
-      }
+      },
     }
   }
 

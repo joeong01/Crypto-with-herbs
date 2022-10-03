@@ -14,10 +14,9 @@ export const getProducts = (result) => {
   });
 };
 
-export const getProductsByCat = (category,result) => {
-  db.query(
-    "SELECT * FROM product WHERE merchantCategory = ?",
-    [category],
+export const getProductsBySort = (sort, result) => {
+  db.query( "SELECT * FROM product ORDER BY ?",
+    [sort],
     (err, results) => {
       if (err) {
         console.log(err);

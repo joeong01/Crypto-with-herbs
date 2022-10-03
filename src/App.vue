@@ -1,6 +1,6 @@
 <template>
     <userFrame v-if="!role" />
-    <AdminFrame v-else/>
+    <adminFrame v-else/>
 
 </template>
 
@@ -8,7 +8,6 @@
 import userFrame from './components/user/userFrame.vue'
 import adminFrame from './components/admin/adminFrame.vue';
 import axios from 'axios';
-import AdminFrame from './components/admin/adminFrame.vue';
 
 export default {
   name: 'App',
@@ -17,7 +16,6 @@ export default {
     userFrame,
     // eslint-disable-next-line vue/no-unused-components
     adminFrame,
-    AdminFrame
   },
   data(){
     return{
@@ -29,23 +27,18 @@ export default {
   created(){
     this.getID();
   },
-  computed:{
-    getLength(){
-      return (this.id.length ==1) ;
-    }
-  },
   methods:{
     async getID(){
       try{
         this.id = await window.ethereum.request({method: "eth_accounts",});
 
-        if(this.getLength()){
+        if(this.id.length != 0){
           const response = await axios.get("http://localhost:5000/users");
           this.temps = response.data;
 
           for(let  i =0; i < this.temps.length; i++){
-            if(this.temps[0] === this.id){
-              if(this.temps[1] == "admin"){
+            if(this.temps[i].userID === this.id){
+              if(this.temps[i].userType == "admin"){
                 this.role = true;
                 console.log("Its Admin"); 
               }

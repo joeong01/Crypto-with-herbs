@@ -5,11 +5,10 @@
             <CCardBody>
                 <CCardTitle>Log In or Create An Account</CCardTitle>
                 <CCardText>Please link crypto-wallet in order to sign in. No funds are necessary or will be withdrawn.</CCardText>
-                <CButton @onclick="connect"><img orientation="left" src="../../assets/Metamask.png" style="margin-right:10$;" />Connect with MetaMask</CButton>
+                <CButton @onclick="connect()"><img orientation="left" src="../../assets/Metamask.png" style="margin-right:10$;" />Connect with MetaMask</CButton>
             </CCardBody>
         </CCard>
-
-        <vue-metamask userMessage="msg" @onComplete="onComplete"/>
+        <vue-metamask @onComplete="done()"/>
     </div>
 </template>
 
@@ -27,63 +26,45 @@ import axios from 'axios';
         },
         data(){
             return {
-                msg: "Connected to the Metamask successfuly",
                 result: "",
                 temp: [],
-                found: false,
-                countDown : 2,
-            }
-        },
-        computed:{
-            getLength(){
-                return (this.result.length ==1) ;
             }
         },
         methods:{
-            async onComplete(data){
-                console.log('data:', data);
+            async done(){
                 try {
+                    let found = false;
                     this.result = await window.ethereum.request({method: "eth_accounts",});
-                    console.log(this.result);
-
-                    if(this.getLength){
-
+                    
+                    if(this.result.length != 0){
                         try{
                             const response = await axios.get("http://localhost:5000/users");
-                            this.temp = response;
+                            this.temp = response.data;
 
                             for(let i = 0; i < this.temp.length ; i++){
-                                if(this.temp[i].userID == this.result && this.temp[i].userType == "customer"){
-                                    alert("Connected to the Metamask successfuly");
-                                    this.countDownTimer();
+                                if(this.temp[i].userID == this.result && this.temp[i].userType == "Customer"){
+                                    this.$router.push('/');
+                                    found = true;
                                 }
                             }
 
-                            if(!this.found){
-                                alert("Creating account for you");
-                                await axios.post("http://localhost:5000/users", {
-                                    userID: this.result,
-                                    userType: "Customer",
-                                });
+                            if (!found){
+                                if (confirm("Creating account for you")== true) {
+                                    await axios.post("http://localhost:5000/users", {
+                                        userID: this.result,
+                                        userType: "Customer",
+                                    });
+                                    if (alert("Connected to the Metamask successfuly, back to homepage") == true) {
+                                        this.$router.push('/');
+                                    }
+                                }
                             }
                         } catch (e){
                             console.log(e);
                         }
-                        
                     }
                 } catch (e) {
                     console.log(e);
-                }
-            },
-            countDownTimer() {
-                if(this.countDown > 0) {
-                    setTimeout(() => {
-                        this.countDown -= 1
-                        this.countDownTimer()
-                    }, 1000)
-                }
-                else{
-                    this.$router.push('/');
                 }
             },
             connect() {

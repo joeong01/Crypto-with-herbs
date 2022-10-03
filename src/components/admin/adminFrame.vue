@@ -3,9 +3,9 @@
     <nav class="page__menu page__custom-settings menu">
       <!--top navigation bar-->
       <ul class="menu__list r-list">
-          <li class="menu__group"><a href="" class="menu__link r-link text-underlined">Homepage</a></li>
-          <li class="menu__group"><a href="" class="menu__link r-link text-underlined">Stock</a></li>
-          <li class="menu__group"><a href="" class="menu__link r-link text-underlined">Transaction</a></li>
+          <li class="menu__group"><a href="/admin" class="menu__link r-link text-underlined">Homepage</a></li>
+          <li class="menu__group"><a href="/stock" class="menu__link r-link text-underlined">Stock</a></li>
+          <li class="menu__group"><a href="/transaction" class="menu__link r-link text-underlined">Transaction</a></li>
       </ul>
     </nav>
   </div>
