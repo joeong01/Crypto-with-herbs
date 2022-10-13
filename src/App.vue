@@ -12,9 +12,7 @@ import axios from 'axios';
 export default {
   name: 'App',
   components: {
-    // eslint-disable-next-line vue/no-unused-components
     userFrame,
-    // eslint-disable-next-line vue/no-unused-components
     adminFrame,
   },
   data(){
@@ -37,7 +35,7 @@ export default {
           this.temps = response.data;
 
           for(let  i =0; i < this.temps.length; i++){
-            if(this.temps[i].userID === this.id){
+            if(this.temps[i].userID == this.id){
               if(this.temps[i].userType == "admin"){
                 this.role = true;
                 console.log("Its Admin"); 
@@ -55,9 +53,4 @@ export default {
     }
   }
 }
-
 </script>
-
-<style>
-
-</style>

@@ -8,7 +8,7 @@
                 <CButton @onclick="connect()"><img orientation="left" src="../../assets/Metamask.png" style="margin-right:10$;" />Connect with MetaMask</CButton>
             </CCardBody>
         </CCard>
-        <vue-metamask @onComplete="done()"/>
+        <vue-metamask @onComplete="checking()"/>
     </div>
 </template>
 
@@ -30,41 +30,50 @@ import axios from 'axios';
                 temp: [],
             }
         },
+        created(){
+            this.checking();
+        },
         methods:{
-            async done(){
-                try {
-                    let found = false;
-                    this.result = await window.ethereum.request({method: "eth_accounts",});
-                    
-                    if(this.result.length != 0){
-                        try{
-                            const response = await axios.get("http://localhost:5000/users");
-                            this.temp = response.data;
+            async checking(){
+                this.result = await window.ethereum.request({method: "eth_accounts",});
+                const response = await axios.get("http://localhost:5000/getUsers");
+                this.temp = response.data;
+                let found = false;
 
-                            for(let i = 0; i < this.temp.length ; i++){
-                                if(this.temp[i].userID == this.result && this.temp[i].userType == "Customer"){
-                                    this.$router.push('/');
-                                    found = true;
-                                }
-                            }
+                if(this.result.length != 0){
+                    try{
 
-                            if (!found){
-                                if (confirm("Creating account for you")== true) {
-                                    await axios.post("http://localhost:5000/users", {
-                                        userID: this.result,
-                                        userType: "Customer",
-                                    });
-                                    if (alert("Connected to the Metamask successfuly, back to homepage") == true) {
-                                        this.$router.push('/');
-                                    }
-                                }
+                        for(let i = 0; i < this.temp.length ; i++){
+                            if(this.temp[i].userID == this.result && this.temp[i].userType == "Customer"){
+                                alert("LogIn sucessfully");
+                                this.$router.push('/');
+                                found = true;
                             }
-                        } catch (e){
-                            console.log(e);
                         }
+
+                        if (!found){
+                            if (confirm("Creating account for you")== true) {
+                                await axios.post("http://localhost:5000/createUsers", {
+                                    userID: this.result,
+                                    userType: "Customer",
+                                });
+
+                                await axios.put("http://localhost:5000/cart/addNewUser",{
+                                    cartID: this.result,
+                                    userID: this.result,
+                                });
+                                
+                                if (alert("Connected to the Metamask successfuly, back to homepage") == true) {
+                                    this.$router.push('/');
+                                }
+                            }
+                        }
+                    } catch (e){
+                        console.log(e);
                     }
-                } catch (e) {
-                    console.log(e);
+                }
+                else{
+                    window.location.reload();
                 }
             },
             connect() {

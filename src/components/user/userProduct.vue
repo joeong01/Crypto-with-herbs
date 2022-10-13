@@ -10,11 +10,9 @@
           <h6>Category List</h6>
           <hr>
           <CButtonGroup vertical role="group" aria-label="Vertical button group">
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" id="categoryList1" autocomplete="off" label="Merchant 1" @click="selectedCategory = 'M1'; getProducts()" checked/>
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" id="categoryList2" autocomplete="off" label="Merchant 2" @click="selectedCategory = 'M2'; getProducts()" />
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" id="categoryList3" autocomplete="off" label="Merchant 3" @click="selectedCategory = 'M3'; getProducts()" />
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" id="categoryList4" autocomplete="off" label="Merchant 4" @click="selectedCategory = 'M4'; getProducts()" />
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" id="categoryList5" autocomplete="off" label="Merchant 5" @click="selectedCategory = 'M5'; getProducts()" />
+            <div v-for="category in merchants" :key="category.merchantCategory" >
+              <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="category.merchantCategory" :label="category.merchantName"  @click="selectedCategory = category.merchantCategory ; getProducts()" checked/>
+            </div>
           </CButtonGroup>
         </div>
         <div class="card-body">
@@ -126,9 +124,9 @@ export default {
       items:[],
       temp: [],
       cart: [],
-      merchants: [],
+      merchants: [""],
       tabPanePillsActiveKey: 1,
-      selectedCategory: 'M1',
+      selectedCategory: '',
       selectedProduct: '',
       sort: 'productName ASC',
       count: 1,
@@ -236,7 +234,7 @@ export default {
       try{
         const response = await axios.get("http://localhost:5000/merchant");
         this.merchants = response.data;
-
+        this.selectedCategory = this.merchants[0].merchantCategory;
       } catch (e){
         console.log(e);
       }

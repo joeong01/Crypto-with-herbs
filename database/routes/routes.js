@@ -17,9 +17,12 @@ import {
 
 import {
   showCart,
+  showCartDetail,
   inserCart,
+  inserUserCart,
   addMoreCart,
   removeCart,
+  removeItem,
 } from "../controllers/cart.js"
 
 import {
@@ -41,13 +44,16 @@ router.put("/products/:id", updateProduct);
 // Delete Product
 router.delete("/products/:id", deleteProduct);
 
-router.get("/users", showUsers);
-router.post("/users", createUser);
+router.get("/getUsers", showUsers);
+router.post("/createUsers", createUser);
 
 router.get("/cart/:id", showCart);
+router.get("/cartDetail/:id", showCartDetail);
+router.put("/cart/addNewUser", inserUserCart);
 router.put("/cart/addMore", inserCart);
 router.post("/cart/addNew", addMoreCart);
 router.get("/cart/remove/:id",removeCart);
+router.get("/cart/remove",removeItem);
 
 router.get("/merchant",showMerchant);
 

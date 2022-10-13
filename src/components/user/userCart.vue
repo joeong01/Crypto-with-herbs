@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-if="products.length == 0">
-      <span style="font-size:30px; aligment:center;">There is no product in cart.</span>
+    <div v-if="products.length = 0">
+      <span style="font-size:30px; aligment: center;">There is no product in cart.</span>
     </div>
     <div v-else >
-      <div >
+      <div style="margin-left:30%;">
         <table >
           <thead>
             <tr>
@@ -16,11 +16,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="product in products" :key="product.id">
+            <tr v-for="product in products" :key="product.productID">
               <td>{{ product.image }}</td>
-              <td>{{ product.name }}</td>
+              <td>{{ product.productName }}</td>
               <td>{{ product.price }}</td>
-              <td>{{ product.number }}</td>
+              <td>{{ product.numberProduct }}</td>
               <td>{{ product.subTotal }}</td>
               <td><CIcon :icon="cilTrash" size="xl" onclick="delete(product.id)"/></td>
             </tr>
@@ -54,7 +54,6 @@ export default {
   data(){
     return{
       products: [],
-      id: '',
       total: 0,
     }
   },
@@ -64,32 +63,34 @@ export default {
   methods: {
     async getCart(){
       try{
-      this.id = await window.ethereum.request({method: "eth_accounts"});
+        let temp=[];
+        let id = await window.ethereum.request({method: "eth_accounts"});
 
-      const response = await axios.get(`http://localhost:5000/cart/${this.id}`);
-      this.products = response.data;
-      console.log(this.products);
+        const response = await axios.get(`http://localhost:5000/cartDetail/${id}`);
+        temp = response.data;
 
-      for(let i =0; i < this.products.length; i ++){
-        this.total += this.products[i].number * this.products[i].price;
-        let subTotal = this.products[i].number * this.products[i].price;
-        this.products[i].push(subTotal);
-      }
-      console.log(this.products);
+        for(let i =0;i <temp.length;i++){
+          temp[i].image = Buffer.from(temp[i].image).toString('base64');
+          this.products.push(temp[i]);
+        }
+
+        this.total = ((await axios.get(`http://localhost:5000/cart/${id}`)).data)[0].totalprice;
+        
+        console.log(this.products);
       }
       catch (e){
         console.log(e);
       }
     },
+    // eslint-disable-next-line no-unused-vars
     increment(product, number) {
-      this.$emit("increment", product, number);
     },
+    // eslint-disable-next-line no-unused-vars
     decrement(product, number) {
-      this.$emit("decrement", product, number);
     },
+    // eslint-disable-next-line no-unused-vars
     delete(product) {
-      this.$emit("delete", product);
     },
-  },
-};
+  }
+}
 </script>
