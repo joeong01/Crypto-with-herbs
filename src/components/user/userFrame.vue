@@ -317,4 +317,14 @@
     color: #9d9d9d;
     margin-bottom: 0;
   }
+
+  .notification .badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  padding: 5px 10px;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  }
 </style>

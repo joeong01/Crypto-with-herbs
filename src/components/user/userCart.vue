@@ -1,29 +1,31 @@
 <template>
   <div>
-    <div v-if="products.length = 0">
+    <div v-if="products.length == 0">
       <span style="font-size:30px; aligment: center;">There is no product in cart.</span>
     </div>
     <div v-else >
-      <div style="margin-left:30%;">
-        <table >
+      <div style="margin-left:16%;">
+        <table style="width: 80%;">
           <thead>
             <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Name</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">SubTotal</th>
+              <th>Product</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>SubTotal</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="product in products" :key="product.productID">
-              <td>{{ product.image }}</td>
+              <td style="width: 300px; height: 200px;"><img :src="`data:image/jpg;base64,${product.image}`" width="250px" height="250px"></td>
               <td>{{ product.productName }}</td>
               <td>{{ product.price }}</td>
-              <td>{{ product.numberProduct }}</td>
-              <td>{{ product.subTotal }}</td>
-              <td><CIcon :icon="cilTrash" size="xl" onclick="delete(product.id)"/></td>
+              <td><CIcon :icon="cilMinus" size="sm" @click="increment(product.productId)"/>{{ product.numberProduct }}<button><CIcon :icon="cilPlus" size="sm" @click="decrement(product.productId)"/></button></td>
+              <td>{{ product.subtotal }}</td>
+              <td><CIcon :icon="cilTrash" size="sm" @click="delete(product.productId)"/></td>
             </tr>
+            <br>
             <tr>
               <th colspan="4"><span style="padding-right: 3%">Total</span></th>
               <td>{{ total }}</td>
@@ -38,7 +40,7 @@
 <script>
 import axios from "axios";
 import { CIcon } from '@coreui/icons-vue';
-import { cilTrash, cilPlus, cilMinus } from '@coreui/icons';
+import { cilTrash, cilPlus, cilMinus} from '@coreui/icons';
 
 export default {
   components: {
@@ -54,43 +56,58 @@ export default {
   data(){
     return{
       products: [],
+      temp: [],
+      id: "",
       total: 0,
     }
   },
   created(){
     this.getCart();
+    this.getID();
   },
   methods: {
     async getCart(){
       try{
-        let temp=[];
-        let id = await window.ethereum.request({method: "eth_accounts"});
+        
+        const response = await axios.get(`http://localhost:5000/cartDetail/${this.id}`);
+        this.temp = response.data;
+        this.products = [];
 
-        const response = await axios.get(`http://localhost:5000/cartDetail/${id}`);
-        temp = response.data;
-
-        for(let i =0;i <temp.length;i++){
-          temp[i].image = Buffer.from(temp[i].image).toString('base64');
-          this.products.push(temp[i]);
+        for(let i =0;i <this.temp.length;i++){
+          this.temp[i].image = Buffer.from(this.temp[i].image).toString('base64');
+          this.products.push(this.temp[i]);
         }
 
-        this.total = ((await axios.get(`http://localhost:5000/cart/${id}`)).data)[0].totalprice;
+        this.total = ((await axios.get(`http://localhost:5000/cart/${this.id}`)).data)[0].totalprice;
         
-        console.log(this.products);
       }
       catch (e){
         console.log(e);
       }
     },
+    async getID(){
+      this.id = await window.ethereum.request({method: "eth_accounts"});
+    },
     // eslint-disable-next-line no-unused-vars
     increment(product, number) {
+      return ;
     },
     // eslint-disable-next-line no-unused-vars
     decrement(product, number) {
+      return ;
     },
     // eslint-disable-next-line no-unused-vars
     delete(product) {
+      return ;
     },
   }
 }
 </script>
+
+<style>
+  td{
+    font-size: 30px;
+    font-weight: 2px;
+  }
+
+</style>

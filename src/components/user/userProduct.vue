@@ -121,7 +121,7 @@ export default {
   },
   data(){
     return{
-      items:[],
+      items: [],
       temp: [],
       cart: [],
       merchants: [""],
@@ -270,5 +270,6 @@ export default {
     position: relative;
     min-height: 200vh;
   }
+
 
 </style>
