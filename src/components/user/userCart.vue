@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="products.length == 0">
-      <span style="font-size:30px; aligment: center;">There is no product in cart.</span>
+      <span style="font-size: 30px; margin-left: 42%;">There is no product in cart.</span>
     </div>
     <div v-else >
       <div style="margin-left:16%;">
@@ -18,11 +18,11 @@
           </thead>
           <tbody>
             <tr v-for="product in products" :key="product.productID">
-              <td style="width: 300px; height: 200px;"><img :src="`data:image/jpg;base64,${product.image}`" width="250px" height="250px"></td>
+              <td style="width: 300px; height: 200px;"><img width="250px" height="250px" :src="`data:image/jpg;base64,${product.image}`" ></td>
               <td>{{ product.productName }}</td>
-              <td>{{ product.price }}</td>
-              <td><CIcon :icon="cilMinus" size="sm" @click="increment(product.productId)"/>{{ product.numberProduct }}<button><CIcon :icon="cilPlus" size="sm" @click="decrement(product.productId)"/></button></td>
-              <td>{{ product.subtotal }}</td>
+              <td>{{ product.cryptoType }} {{ product.price }}</td>
+              <td><CIcon :icon="cilMinus" size="sm" @click="increment(product.productId)"/>{{ product.numberProduct }}<CIcon :icon="cilPlus" size="sm" @click="decrement(product.productId)"/></td>
+              <td>{{ product.cryptoType }} {{ product.subtotal }}</td>
               <td><CIcon :icon="cilTrash" size="sm" @click="delete(product.productId)"/></td>
             </tr>
             <br>
@@ -62,23 +62,22 @@ export default {
     }
   },
   created(){
-    this.getCart();
     this.getID();
+    this.getCart();
   },
   methods: {
     async getCart(){
       try{
-        
-        const response = await axios.get(`http://localhost:5000/cartDetail/${this.id}`);
+        let ID = await window.ethereum.request({method: "eth_accounts"});
+        const response = await axios.get(`http://localhost:5000/cartDetail/${ID}`);
         this.temp = response.data;
-        this.products = [];
 
         for(let i =0;i <this.temp.length;i++){
           this.temp[i].image = Buffer.from(this.temp[i].image).toString('base64');
           this.products.push(this.temp[i]);
         }
 
-        this.total = ((await axios.get(`http://localhost:5000/cart/${this.id}`)).data)[0].totalprice;
+        this.total = ((await axios.get(`http://localhost:5000/cart/${ID}`)).data)[0].totalprice;
         
       }
       catch (e){
@@ -101,7 +100,7 @@ export default {
       return ;
     },
   }
-}
+};
 </script>
 
 <style>

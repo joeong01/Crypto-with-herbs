@@ -128,7 +128,7 @@ export default {
       tabPanePillsActiveKey: 1,
       selectedCategory: '',
       selectedProduct: '',
-      sort: 'productName ASC',
+      sort: "productName ASC",
       count: 1,
       logged: false,
       sameMerchant: true,
@@ -142,7 +142,8 @@ export default {
   methods:{
     async getProducts() {
       try {
-        const response = await axios.get(`http://localhost:5000/productsSort/${this.sort}`)
+        let Sort = this.sort;
+        const response = await axios.get(`http://localhost:5000/productsSort/${Sort}`)
         this.temps = response.data;
         this.items = [];
 

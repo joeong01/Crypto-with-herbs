@@ -31,7 +31,7 @@ export const showProductById = (req, res) => {
 };
 
 export const showProductsBySort = (req, res) => {
-  getProductsBySort(req.params.sort, (err, results) => {
+  getProductsBySort( req.data, (err, results) => {
     if (err) {
       res.send(err);
     } else {
