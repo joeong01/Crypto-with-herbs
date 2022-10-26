@@ -14,9 +14,9 @@ export const getProducts = (result) => {
   });
 };
 
-export const getProductsBySort = (sort, result) => {
-  db.query( "SELECT * FROM product ORDER BY ?",
-    [sort],
+export const getProductsByFS = (sort, result) => {
+  db.query( "SELECT * FROM product ORDER BY ? ", 
+  [sort],
     (err, results) => {
       if (err) {
         console.log(err);

@@ -21,9 +21,11 @@
               <td style="width: 300px; height: 200px;"><img width="250px" height="250px" :src="`data:image/jpg;base64,${product.image}`" ></td>
               <td>{{ product.productName }}</td>
               <td>{{ product.cryptoType }} {{ product.price }}</td>
-              <td><CIcon :icon="cilMinus" size="sm" @click="increment(product.productId)"/>{{ product.numberProduct }}<CIcon :icon="cilPlus" size="sm" @click="decrement(product.productId)"/></td>
-              <td>{{ product.cryptoType }} {{ product.subtotal }}</td>
-              <td><CIcon :icon="cilTrash" size="sm" @click="delete(product.productId)"/></td>
+              <td>
+                <input :id="product.productID" type="number" :value="product.numberProduct" min="1" :max="product.stock" @change="checking(product.stock,product.productID, product.productName, product.price)" style="width: 100px;" required>
+              </td>
+              <td>{{ product.subtotal }}</td>
+              <td><button style="width: 100px; height: 100px; background-color: transparent; border: none;" @click="delete(product.productId)"><CIcon :icon="cilTrash" size="sm"/></button></td>
             </tr>
             <br>
             <tr>
@@ -40,7 +42,7 @@
 <script>
 import axios from "axios";
 import { CIcon } from '@coreui/icons-vue';
-import { cilTrash, cilPlus, cilMinus} from '@coreui/icons';
+import { cilTrash } from '@coreui/icons';
 
 export default {
   components: {
@@ -49,16 +51,15 @@ export default {
   setup() {
     return {
       cilTrash,
-      cilPlus,
-      cilMinus,
     }
   },
   data(){
     return{
       products: [],
       temp: [],
-      id: "",
+      toast: [],
       total: 0,
+      cartID: "",
     }
   },
   created(){
@@ -84,21 +85,43 @@ export default {
         console.log(e);
       }
     },
-    async getID(){
-      this.id = await window.ethereum.request({method: "eth_accounts"});
+    checking(max,id,name,price){
+      if(document.getElementById(id).value > max){
+        document.getElementById(id).value = max;
+
+        alert( name + " has reach maximum value");
+      }
+      else if(document.getElementById(id).value < 1){
+        document.getElementById(id).value = 1;
+        alert( name + " has reach minimum value");
+      }
+      
+      this.update(id,price);
     },
-    // eslint-disable-next-line no-unused-vars
-    increment(product, number) {
-      return ;
-    },
-    // eslint-disable-next-line no-unused-vars
-    decrement(product, number) {
-      return ;
+    async update(id,price){
+      let sub = price * document.getElementById(id).value;
+      await axios.put("http://localhost:5000/cart/updateDetail",{
+        subtotal: sub,
+        newNumber: document.getElementById(id).value,
+        cartID: this.cartID,
+        productID: id,
+      });
+
+      await axios.put("http://localhost:5000/cart/updateTotal",{
+        userID: this.cartID,
+        cartID: this.cartID,
+      });
+
+      location.reload();
     },
     // eslint-disable-next-line no-unused-vars
     delete(product) {
       return ;
     },
+    async getID(){
+      this.cartID = await window.ethereum.request({method: "eth_accounts"});
+      console.log(this.cartID);
+    }
   }
 };
 </script>

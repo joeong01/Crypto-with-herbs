@@ -11,7 +11,8 @@
           <hr>
           <CButtonGroup vertical role="group" aria-label="Vertical button group">
             <div v-for="category in merchants" :key="category.merchantCategory" >
-              <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="category.merchantCategory" :label="category.merchantName"  @click="selectedCategory = category.merchantCategory ; getProducts()" checked/>
+              <CFormCheck v-if="merchants[0].merchantCategory == category.merchantCategory" type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="merchants[0].merchantName" :label="merchants[0].merchantName"  @click="selectedCategory = merchants[0].merchantCategory ; getProducts()" checked/>
+              <CFormCheck v-else type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="category.merchantName" :label="category.merchantName"  @click="selectedCategory = category.merchantCategory ; getProducts()"/>
             </div>
           </CButtonGroup>
         </div>
@@ -20,12 +21,12 @@
           <hr>
           <h6>Herb Name</h6>
           <CButtonGroup vertical role="group" aria-label="Horizontal button group">
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting1" autocomplete="off" label="Ascending" @click="sort = 'productName ASC'; getProducts()" checked/>
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting2" autocomplete="off" label="Descending" @click="sort = 'productName DESC'; getProducts()" />
+            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting1" label="Ascending" @click="selectedSort = 'productName ASC'; getProducts()" checked/>
+            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting2" label="Descending" @click="selectedSort = 'productName DESC'; getProducts()" />
           <br><br>
           <h6>Price</h6>
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting3" autocomplete="off" label="Ascending" @click="sort = 'price ASC'; getProducts()" />
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting4" autocomplete="off" label="Descending" @click="sort = 'price DESC'; getProducts()" />
+            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting3" label="Ascending" @click="selectedSort = 'price ASC'; getProducts()" />
+            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting4"  label="Descending" @click="selectedSort = 'price DESC'; getProducts()" />
           </CButtonGroup>
         </div>
       </div>
@@ -64,23 +65,23 @@
                       </CNav>
                     </CModalBody>
                     <span style="color: black;">
-                      <CModelFooter v-if="logged && sameMerchant">
-                          <CDropdown :color="primary" :togglerText="count" style="margin-bottom: 3%; margin-right: 10%" direction="center">
-                            <CDropdownToggle :color="primary">{{count}}</CDropdownToggle>
-                            <CDropdownMenu style="width: fit-content; height: fit-content;">
-                              <div v-if="item.stock>15">
-                                <div  v-for="(n,index) in 15" :key="index">
-                                  <CDropdownItem @click="count = n">{{ n }}</CDropdownItem>
-                                </div>
+                      <CModelFooter v-if="logged">
+                        <CDropdown :color="primary" :togglerText="count" style="margin-bottom: 3%; margin-right: 10%" direction="center">
+                          <CDropdownToggle :color="primary">{{count}}</CDropdownToggle>
+                          <CDropdownMenu style="width: fit-content; height: fit-content;">
+                            <div v-if="item.stock>15">
+                              <div v-for="(n,index) in 15" :key="index">
+                                <CDropdownItem @click="count = n">{{ n }}</CDropdownItem>
                               </div>
-                              <div v-else>
-                                <div  v-for="(n,index) in item.stock" :key="index">
-                                  <CDropdownItem @click="count = n">{{ n }}</CDropdownItem>
-                                </div>
+                            </div>
+                            <div v-else>
+                              <div v-for="(n,index) in item.stock" :key="index">
+                                <CDropdownItem @click="count = n">{{ n }}</CDropdownItem>
                               </div>
-                            </CDropdownMenu>
-                          </CDropdown>
-                        <CButton color="primary" @click="selectedProduct = 'item.productID'; check(); item.details = 0" style="margin-bottom: 3%;">Add to Cart</CButton>
+                            </div>
+                          </CDropdownMenu>
+                        </CDropdown>
+                        <CButton color="primary" @click="selectedProduct = item.productID ; check(item.price); item.details = 0" style="margin-bottom: 3%;">Add to Cart</CButton>
                       </CModelFooter>
                       <CModalFooter v-else>
                         <CButton component="a" color="info" href="/LogIn" role="button"><b>Log In to add to cart</b></CButton>
@@ -123,38 +124,32 @@ export default {
     return{
       items: [],
       temp: [],
-      cart: [],
-      merchants: [""],
+      merchants: [],
       tabPanePillsActiveKey: 1,
-      selectedCategory: '',
+      selectedCategory: "",
+      selectedSort: 'productName ASC',
       selectedProduct: '',
-      sort: "productName ASC",
       count: 1,
       logged: false,
-      sameMerchant: true,
       id: "",
     };
   },
-  created() {
-    this.getProducts();
+  mounted() {
     this.getMerchants();
+    this.getProducts();
   },
   methods:{
     async getProducts() {
       try {
-        let Sort = this.sort;
-        const response = await axios.get(`http://localhost:5000/productsSort/${Sort}`)
+        const response = await axios.get(`http://localhost:5000/productsFS/${this.selectedSort}`);
         this.temps = response.data;
         this.items = [];
-
-        for(let  i =0; i < this.temps.length; i++){
-          if (this.temps[i].merchantCategory === this.selectedCategory){
+        for(let i =0; i < this.temps.length ; i++){
+          if(this.temps[i].merchantCategory == this.selectedCategory){
             this.temps[i].image = Buffer.from(this.temps[i].image).toString('base64');
             this.items.push(this.temps[i]);
           }
         }
-
-        console.log(this.items);
       } catch (err) {
         console.log(err);
       }
@@ -170,62 +165,91 @@ export default {
         console.log(err);
       }
     },
-    async check(){
+    async check(price){
       try{
-        const response = await axios.get(`http://localhost:5000/cart/${this.id}`);
-
-        this.cart = response.data;
-        if(this.cart.length != 0){
-          if(this.cart[0].merchantCategory != this.selectedCategory){
+        let id = await window.ethereum.request({method: "eth_accounts"});
+        const response = await axios.get(`http://localhost:5000/cart/${id}`);
+        let owner = response.data;
+        if(owner[0].totalprice != 0 ){
+          if(owner[0].merchantType != this.selectedCategory){
             if(confirm("Only 1 type or merchant can be choose to add to cart\nDelete previous type of Merchant to add in new?") == true){
-              const response = await axios.get(`http://localhost:5000/cart/remove/${this.id}`);
-              console.log(response);
+              await axios.get(`http://localhost:5000/cart/remove/${id}`);
+              await axios.put(`http://localhost:5000/cart/reset/${id}`);
+              alert("Cart has been cleared");
             }
           }
           else{
-            this.addToCart();
+            this.addToCart(price);
           }
+        }
+        else{
+          await axios.put("http://localhost:5000/cart/addNew",{
+              cartID: id,
+              productID: this.selectedProduct,
+              price: price,
+              numberProduct : this.count,
+              subtotal: price * this.count,
+            }
+          );
+
+          await axios.put("http://localhost:5000/cart/updateTotal",{
+            userID: id,
+            cartID: id,
+          });
+        
+          await axios.put("http://localhost:5000/cart/updateMerchant",{
+            merchantType: this.selectedCategory,
+            cartID: id,
+          });
+
+          alert("New added into cart");
         }
       }
       catch (err) {
         console.log(err); 
       }
     },
-    async addToCart(){
+    async addToCart(price){
       try {
-        let newItem = false;
+        let found = false;
+        let id = await window.ethereum.request({method: "eth_accounts"});
+        const response = await axios.get(`http://localhost:5000/cartDetail/${id}`);
+        let cart = response.data;
 
-        if(this.cart.length !=0){
-          for(let i =0;i < this.cart.length; i++){
-            if(this.cart[i].productID == this.selectedProduct){
-              try {
-                await axios.put(`http://localhost:5000/cart/addMore/${this.id}`,
-                  {
-                    number : this.count,
-                    userID : this.id,
-                    productID: this.selectedProduct,
-                  }
-                );
-              } catch (e) {
-                console.log(e);
-              }
-            }
+        for(let i =0; i < cart.length; i++){
+          if(cart[i].productID == this.selectedProduct){
+            found = true;
+            await axios.put(`http://localhost:5000/cart/addMore/${id}`,{
+              productID: this.selectedProduct,
+              number : this.count,
+              subtotal: price * this.count,
+            });
+
+            await axios.put("http://localhost:5000/cart/updateTotal",{
+              userID: id,
+              cartID: id,
+            });
+
+            alert("Added into cart");
           }
         }
 
-        if(!newItem){
-          try {
-            await axios.post(`http://localhost:5000/cart/addNew${this.id}`,
-              {
-                number : this.count,
-                userID : this.id,
-                productID: this.selectedProduct,
-              }
-            );
-            newItem = true;
-          } catch (e) {
-            console.log(e);
+        if(!found){
+          await axios.put("http://localhost:5000/cart/addNew",{
+            cartID: id,
+            productID: this.selectedProduct,
+            price: price,
+            numberProduct : this.count,
+            subtotal: price * this.count,
           }
+        );
+
+        await axios.put("http://localhost:5000/cart/updateTotal",{
+          userID: id,
+          cartID: id,
+        });
+        
+        alert("New added into cart");
         }
       } catch (e) {
         console.log(e);

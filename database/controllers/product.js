@@ -2,7 +2,7 @@
 import {
   getProducts,
   getProductById,
-  getProductsBySort,
+  getProductsByFS,
   insertProduct,
   updateProductById,
   deleteProductById,
@@ -30,8 +30,8 @@ export const showProductById = (req, res) => {
   });
 };
 
-export const showProductsBySort = (req, res) => {
-  getProductsBySort( req.data, (err, results) => {
+export const showProductsByFS = (req, res) => {
+  getProductsByFS( req.params.sort ,(err, results) => {
     if (err) {
       res.send(err);
     } else {
