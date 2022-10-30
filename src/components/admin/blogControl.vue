@@ -8,7 +8,7 @@
                     <CModalTitle><label>Name: </label><input type="text" id="Title" placeholder="Title" @change="isEmpty()"/></CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <label>Author: </label><input type="text" id="Author" placeholder="Author" @change="isEmpty()"/><br><br>                       
+                        <label>Author:</label><input type="text" id="Author" placeholder="Author" @change="isEmpty()"/><br><br>                       
                         <Label>Content:</Label><br>
                         <textarea id="Content" rows="15" cols="145" placeholder="Content" @change="isEmpty()"></textarea><br>
                         <CButton id="toAdd" @click="toAdd(); add = false" color="primary" shape="rounded-pill">Add</CButton>
@@ -81,7 +81,7 @@ export default {
             window.location.reload();
         },
         async remove(ID){
-            if(confirm("Are you sure wan to delete \"" + document.getElementById(ID+'name').value + "\"?")){
+            if(confirm("Are you sure wan to delete \"" + document.getElementById(ID+'title').value + "\"?")){
                 console.log(await axios.put("http://localhost:5000/blog/delete",{ id: ID,}));
                 alert("Removed");
                 window.location.reload();
@@ -96,14 +96,13 @@ export default {
             }
         },
         async toAdd(){
-            console.log(document.getElementById("Title").value + document.getElementById("Author").value + document.getElementById("Content").value);
-            const temp = await axios.post("http://localhost:5000/blog/insert",{
+            const response = (await axios.put("http://localhost:5000/blog/insert",{
                 title: document.getElementById("Title").value,
                 author: document.getElementById("Author").value,
                 content: document.getElementById("Content").value,
-            });
+            }));
 
-            console.log(temp);
+            console.log(response);
 
         }
     },

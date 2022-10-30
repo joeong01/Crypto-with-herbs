@@ -1,7 +1,19 @@
 import db from "../config/database.js";
 
-export const getMerchant = (result) => {
+export const getAllMerchant = (result) => {
   db.query("SELECT * FROM merchant",
+  (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
+export const getMerchant = (result) => {
+  db.query("SELECT * FROM merchant WHERE enable = 1",
   (err, results) => {
     if (err) {
       console.log(err);
@@ -26,8 +38,8 @@ export const setMerchant = (data,result) => {
 };
 
 export const changeMerchant = (data,result) => {
-  db.query("UPDATE merchant SET merchantName = ? , walletID = ? , platformCharges = ? WHERE merchantCategory = ?",
-  [data.merchantName, data.walletID ,data.platformCharges ,data.merchantCategory],
+  db.query("UPDATE merchant SET merchantName = ? , walletID = ? , platformCharges = ? enable = ? WHERE merchantCategory = ?",
+  [data.merchantName, data.walletID ,data.fund ,data.id, data.enable],
   (err, results) => {
     if (err) {
       console.log(err);
@@ -116,9 +128,9 @@ export const setMerchantMinus = (id,result) => {
   });
 };
 
-export const removeMerchant = (data,result) => {
-  db.query("DELETE merchant  WHERE `merchantCategory` = ?",
-  [data.is],
+export const silentMerchant = (id,result) => {
+  db.query("UPDATE merchant SET enable = !enable WHERE `merchantCategory` = ?",
+  [id],
   (err, results) => {
     if (err) {
       console.log(err);

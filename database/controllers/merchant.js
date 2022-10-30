@@ -1,4 +1,5 @@
 import{
+  getAllMerchant,
   getMerchant,
   setMerchant,
   changeMerchant,
@@ -8,8 +9,19 @@ import{
   clearFund,
   setMerchantPlus,
   setMerchantMinus,
-  removeMerchant,
+  silentMerchant,
 } from "../models/merchantModel.js";
+
+export const showAllMerchant = (req, res) => {
+  getAllMerchant((err, results) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
 
 export const showMerchant = (req, res) => {
   getMerchant((err, results) => {
@@ -22,7 +34,7 @@ export const showMerchant = (req, res) => {
 };
 
 export const insertMerchant = (req, res) => {
-  setMerchant(req.data, (err, results) => {
+  setMerchant(req.body, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -32,7 +44,7 @@ export const insertMerchant = (req, res) => {
 };
 
 export const updateMerchant = (req, res) => {
-  changeMerchant(req.data, (err, results) => {
+  changeMerchant(req.body, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -62,7 +74,7 @@ export const getWalletID = (req, res) => {
 };
 
 export const updateFund = (req, res) => {
-  setFund( req.data, (err, results) => {
+  setFund( req.body, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -90,6 +102,7 @@ export const plusMerchantProduct = (req, res) => {
     }
   });
 };
+
 export const minusMerchantProduct = (req, res) => {
   setMerchantMinus( req.params.id, (err, results) => {
     if (err) {
@@ -99,8 +112,8 @@ export const minusMerchantProduct = (req, res) => {
     }
   });
 };
-export const deleteMerchant = (req, res) => {
-  removeMerchant(req.data, (err, results) => {
+export const disableMerchant = (req, res) => {
+  silentMerchant(req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {

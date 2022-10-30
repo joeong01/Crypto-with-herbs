@@ -16,7 +16,7 @@ export const showBlogs = (req, res) => {
 };
 
 export const setBlog = (req, res) => {
-  const data = req.data;
+  const data = req.body;
   insertBlog( data, (err, results) => {
     if (err) {
       res.send(err);
@@ -27,7 +27,7 @@ export const setBlog = (req, res) => {
 };
 
 export const updateBlog = (req, res) => {
-  const data = req.data;
+  const data = req.body;
   changeBlog(data, (err, results) => {
     if (err) {
       res.send(err);
@@ -38,7 +38,7 @@ export const updateBlog = (req, res) => {
 };
 
 export const removeBlog = (req, res) => {
-  const data = req.data;
+  const data = req.body;
   deleteBlog( data, (err, results) => {
     if (err) {
       res.send(err);

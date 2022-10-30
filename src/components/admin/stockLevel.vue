@@ -7,30 +7,30 @@
           <h5>filter<CButton style="margin-left: 50%;" color="primary" shape="rounded-pill" @click="toAdd = true; selectedFundType = '-'">New</CButton></h5>
           <CModal size="lg" alignment="center" :visible="toAdd" @close="toAdd = false;" >
             <CModalHeader>
-              <CModalTitle><span style="color: black;"><input id="Name" type="text" @change="validation()"/></span></CModalTitle>
+              <CModalTitle><span style="color: black;"><input id="Name" type="text" placeholder="Name" @change="validation()"/></span></CModalTitle>
             </CModalHeader>
             <CModalBody>
-              <label>Image: &emsp;</label><input type="file" accept="image/jpeg"/>&emsp;&emsp;
+              <label>Image: &emsp;</label><input type="file" accept="image/*" id="Image" name="Image"/>&emsp;&emsp;
               <label>Merchant: &emsp;</label><CDropdown :color="primary" :togglerText="count" style="margin-bottom: 3%; margin-right: 10%" direction="center">
                 <CDropdownToggle :color="primary">{{ toAddMerchant }}</CDropdownToggle>
                 <CDropdownMenu style="width: fit-content; height: fit-content;">
                   <div v-for="merchant in merchants" :key="merchant.merchantCategory">
-                    <CDropdownItem @click="toAddMerchant = merchant.merchantCategory; changeMerchant(merchant.fundType)">{{ merchant.merchantName}}</CDropdownItem>
+                    <CDropdownItem @click="toAddMerchant = merchant.merchantCategory; changeMerchant(merchant.fundType)" @change="validation()">{{ merchant.merchantName}}</CDropdownItem>
                   </div>
                 </CDropdownMenu>
               </CDropdown><br><br>
               <h3><span style="color: black;">ID: <input :value="newID" readonly/></span></h3><br>
-              <h3 style="margin-bottom: 10px;"><span style="color: black;">Price: <input id="Price" step="0.00001" type="number" min="0.00001" @change="validation()"/></span></h3><br>
-              <h3 style="margin-bottom: 10px;"><span style="color: black;">Stock: <input id="Stock" type="number" min="1" @change="validation()"/></span></h3><br>
-              <h3 style="margin-bottom: 10px;"><span style="color: black;">Fund Type: <input id="toAddFundType" value="-" readonly/></span></h3><br>
+              <h3 style="margin-bottom: 10px;"><span style="color: black;">Price:<input id="Price" step="0.00001" type="number" min="0.00001" value="0.00001" @change="validation()"/></span></h3><br>
+              <h3 style="margin-bottom: 10px;"><span style="color: black;">Stock:<input id="Stock" type="number" min="1" value="1" @change="validation()"/></span></h3><br>
+              <h3 style="margin-bottom: 10px;"><span style="color: black;">Fund Type:<input id="toAddFundType" value="-" readonly @change="validation()"/></span></h3><br>
               <h3><span style="color: black;">Description</span></h3>
-              <textarea id="Description" rows="4" cols="100" @change="validation()"></textarea>
+              <textarea id="Description" rows="4" cols="100" placeholder="Description" @change="validation()"></textarea>
               <h3><span style="color: black;">Preservation</span></h3>
-              <textarea id="Preservation" rows="4" cols="100" @change="validation()"></textarea>
+              <textarea id="Preservation" rows="4" cols="100" placeholder="Preservation" @change="validation()"></textarea>
             </CModalBody>
             <span style="color: black;">
               <CModelFooter>
-                <CButton style="margin-left: 50%;margin-bottom: 3%;" id="adding" color="primary" @click="addIntoDatabase(); toAdd = false">Add</CButton>              
+                <CButton style="margin-left: 50%;margin-bottom: 3%;" id="adding" color="primary" @click="addNew(); toAdd = false">Add</CButton>              
               </CModelFooter>
             </span>
           </CModal>
@@ -109,13 +109,13 @@ export default {
     return{
       items: [],
       temp: [],
+      newImage: "",
       merchants: [],
       toAddMerchant: "",
       selectedCategory: "",
       selectedSort: 'productName ASC',
       toAdd: false,
       newID: 0,
-      previewImage: null,
     };
   },
   mounted() {
@@ -138,8 +138,6 @@ export default {
       } catch (err) {
         console.log(err);
       }
-
-      document.getElementById("adding").setAttribute("disabled","disabled");
       try{
         this.id = await window.ethereum.request({method: "eth_accounts"});
 
@@ -174,20 +172,35 @@ export default {
       console.log(response);
     },
     validation(){
-      if( document.getElementById("Name").value != "" && document.getElementById("Stock").value != "" && document.getElementById("Description").value != "" && document.getElementById("Preservation").value != "" && document.getElementById("Price").value > 0 && document.getElementById("Price").value != "" && this.toAddMerchant != "-"){
+      if( document.getElementById("Image").files.length != 0 && document.getElementById("Name").value != "" && document.getElementById("Stock").value != "" && document.getElementById("Description").value != "" && document.getElementById("Preservation").value != "" && document.getElementById("Price").value > 0 && document.getElementById("Price").value != "" && this.toAddMerchant != "" ){
         document.getElementById("adding").removeAttribute("disabled");
       }
       else{
         document.getElementById("adding").setAttribute("disabled","disabled");
       }
     },
-    async addIntoDatabase(){
-      await axios.get(`http//localhost:5000/merchant/plus/${this.toAddMerchant}`);
-    },
+    async addNew(){
+      let filesSelected = document.getElementById('Image').files;
+
+      await axios.post("http://localhost:5000/productCreate",{
+        productID: this.newID,
+        productName: document.getElementById("Name").value,
+        stock: document.getElementById("Stock").value, 
+        cryptoType: document.getElementById("toAddFundType").value, 
+        price: document.getElementById("Price").value, 
+        merchantCategory: this.toAddMerchant, 
+        description: document.getElementById("Description").value, 
+        preservation: document.getElementById("Preservation").value,
+        image: filesSelected,
+      });
+
+      await axios.put(`http://localhost:5000/merchantPlus/${this.toAddMerchant}`);
+    },  
     async removeProduct(ID){
       if(confirm("Are you sure wan to delete \"" + document.getElementById("name").value +"\" ?")){
-        console.log(await axios.delete("http://localhost:5000/product/delete",{ id: ID,}));
-        await axios.get(`http//localhost:5000/merchant/minus/${this.toAddMerchant}`);
+        await axios.delete(`http://localhost:5000/cart/removeAllSameProduct/${ID}`);
+        await axios.delete(`http://localhost:5000/productDelete/${ID}`);
+        await axios.put(`http://localhost:5000/merchantMinus/${this.toAddMerchant}`);
       }
     },
     async getMerchants(){
@@ -204,7 +217,6 @@ export default {
     }
   }
 }
-
   let Script6 = document.createElement("script");
   let Script7 = document.createElement("script");
 

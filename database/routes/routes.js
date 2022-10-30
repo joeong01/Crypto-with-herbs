@@ -6,10 +6,11 @@ import {
   showProductsByFS,
   showProductById,
   createProduct,
-  updateProduct,
   reduceStock,
   deleteProduct,
-  updateAll
+  updateAll,
+  removeAll,
+  
 } from "../controllers/product.js";
 
 import {
@@ -30,9 +31,11 @@ import {
   updateItemNumber,
   removeCart,
   removeItem,
+  removeAllSameProduct,
 } from "../controllers/cart.js"
 
 import {
+  showAllMerchant,
   showMerchant,
   insertMerchant,
   updateMerchant,
@@ -42,7 +45,7 @@ import {
   resetFund,
   plusMerchantProduct,
   minusMerchantProduct,
-  deleteMerchant,
+  disableMerchant,
 } from "../controllers/merchant.js"
 
 import {
@@ -56,11 +59,11 @@ const router = express.Router();
 router.get("/products", showProducts);
 router.get("/products", showProductById);
 router.get("/productsFS/:sort", showProductsByFS);
-router.post("/products", createProduct);
-router.put("/products/:id", updateProduct);
-router.delete("/product/delete", deleteProduct);
+router.post("/productCreate", createProduct);
+router.delete("/product/productDelete/:id", deleteProduct);
 router.put("/product/reduceStock/:id", reduceStock);
 router.put("/product/updateAll", updateAll);
+router.delete("/product/removeAll", removeAll);
 
 router.get("/getUsers", showUsers);
 router.post("/createUsers", createUser);
@@ -77,21 +80,23 @@ router.put("/cart/addNew", inserCart);
 router.put("/cart/addMore", addMoreSameItem);
 router.put("/cart/updateDetail", updateItemNumber);
 router.get("/cart/remove/:id", removeCart);
-router.put("/cart/removeItem", removeItem);
+router.put("/cart/removeCartProduct/id", removeItem);
+router.delete("/cart/removeAllSameProduct", removeAllSameProduct);
 
+router.get("/allMerchants", showAllMerchant);
 router.get("/merchants", showMerchant);
-router.post("/mercahnts/insertMerchant", insertMerchant);
-router.put("/merchant/updateALL", updateMerchant);
+router.post("/merchant/insertMerchant", insertMerchant);
+router.put("/merchant/updateAll", updateMerchant);
 router.get("/merchant/merchantCharge/:id", showMerchantCharge);
 router.get("/merchant/merchantWalletID/:id", getWalletID);
 router.put("/merchant/updateFund", updateFund);
 router.get("/merchant/releaseFund/:id", resetFund);
-router.get("/merchant/plus/:id", plusMerchantProduct);
-router.get("/merchant/minus/:id", minusMerchantProduct);
-router.delete("/merchant/delete", deleteMerchant);
+router.put("/merchantPlus/:id", plusMerchantProduct);
+router.put("/merchantMinus/:id", minusMerchantProduct);
+router.get("/merchantDisable/:id", disableMerchant);
 
 router.get("/blogs", showBlogs);
-router.post("/blog/insert", setBlog);
+router.put("/blog/insert", setBlog);
 router.put("/blog/update", updateBlog);
 router.put("/blog/delete", removeBlog);
 

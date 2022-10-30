@@ -126,7 +126,7 @@ export const updateCartNumber = (data, result) => {
   });
 };
 
-export const deleteCart= (id,result) => {
+export const deleteCart = (id,result) => {
   db.query("DELETE FROM shoppingcartdetail WHERE cartID = ?",
   [id],
   (err, results) => {
@@ -139,9 +139,22 @@ export const deleteCart= (id,result) => {
   });
 };
 
-export const deleteItem= (data,result) => {
-  db.query("DELETE FROM shoppingcartdetail WHERE cartID = ? AND productID = ?",
+export const deleteItem = (data,result) => {
+  db.query("DELETE FROM `shoppingcartdetail` WHERE `cartID` = \"?\" AND `productID` = ?",
   [data.cartID, data.productID],
+  (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
+export const deleteAllSame= (id, result) => {
+  db.query("DELETE FROM `shoppingcartdetail` WHERE `productID` = ?",
+  [id],
   (err, results) => {
     if (err) {
       console.log(err);

@@ -45,9 +45,17 @@ import axios from 'axios';
 
                         for(let i = 0; i < this.temp.length ; i++){
                             if(this.temp[i].userID == this.result){
-                                alert("LogIn sucessfully");
                                 found = true;
-                                this.$router.push('/'); 
+
+                                if(this.temp[i].userType == "Customer"){
+                                    alert("LogIn sucessfully");
+                                    this.$router.push('/'); 
+                                }
+                                else{
+                                    alert("LogIn sucessfully");
+                                    this.$router.push('/admin');
+                                }
+                                
                             }
                         }
 

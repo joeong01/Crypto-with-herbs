@@ -11,6 +11,7 @@ import {
   updateCartNumber,
   deleteCart,
   deleteItem,
+  deleteAllSame,
 } from "../models/cartModel.js";
 
 export const showCart = (req, res) => {
@@ -129,8 +130,19 @@ export const removeCart = (req, res) => {
   });
 };
 
-export const removeItem= (req, res) => {
-  deleteItem( req.data, (err, results) => {
+export const removeItem = (req, res) => {
+  const data = req.body
+  deleteItem( data, (err, results) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+export const removeAllSameProduct = (req, res) => {
+  deleteAllSame( req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {

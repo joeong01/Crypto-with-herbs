@@ -55,21 +55,6 @@ export const insertProduct = (data, result) => {
   });
 };
 
-// Update Product to Database
-export const updateProductById = (data, id, result) => {
-  db.query(
-    "UPDATE product SET productName = ?, price = ? WHERE productID = ?",
-    [data.productName, data.price, id],
-    (err, results) => {
-      if (err) {
-        console.log(err);
-        result(err, null);
-      } else {
-        result(null, results);
-      }
-    }
-  );
-};
 
 export const updateProductStock = (data, id, result) => {
   db.query(
@@ -101,6 +86,17 @@ export const deleteProductById = (id, result) => {
 export const changeAll = (data,result) => {
   db.query("UPDATE product SET `productName` = ? , `price` = ? , `stock` = ?, `description` = ? , `preservation` = ? WHERE `productID` = ?;",
   [data.productName, data.price, data.stock, data.description, data.preservation, data.productID], (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
+export const clearAll = (id, result) => {
+  db.query("DELETE FROM product WHERE merchantCategory = ?", [id], (err, results) => {
     if (err) {
       console.log(err);
       result(err, null);

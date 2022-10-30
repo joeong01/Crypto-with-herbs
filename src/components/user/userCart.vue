@@ -25,7 +25,7 @@
                 <input :id="product.productID" type="number" :value="product.numberProduct" min="1" :max="product.stock" @change="checking(product.stock, product.productID, product.productName, product.price)" style="width: 100px;" required>
               </td>
               <td>{{cryptoType}} {{ product.subtotal }}</td>
-              <td><button style="width: 100px; height: 100px; background-color: transparent; border: none;" @click="toDelete(product.productName,product.productID)"><CIcon :icon="cilTrash" size="sm" /></button></td>
+              <td><button style="width: 100px; height: 100px; background-color: transparent; border: none;" @click="toDelete(product.productName, product.productID)"><CIcon :icon="cilTrash" size="sm" /></button></td>
             </tr>
             <br>
             <tr>
@@ -122,13 +122,12 @@ export default {
     async toDelete(name,id) {
       if(confirm("Delete " + name + " from cart??")){
         try{
-          let ID = await window.ethereum.request({method: "eth_accounts"});
-          let sr = (await axios.get("http://localhost:5000/cart/removeItem",{
-            cartID: ID,
+
+          const response = (await axios.delete(`http://localhost:5000/cart/removeCartProduct/${this.cartID}`,{
             productID: id,
           }));
 
-          console.log(sr);
+          console.log(response);
 
           await axios.get("http://localhost:5000/cart/updateTotal",{
             userID: this.cartID,
@@ -136,8 +135,7 @@ export default {
           });
           
           alert("Removed");
-
-          location.reload();
+          // location.reload();
         } catch (e){
           console.log(e);
         }
