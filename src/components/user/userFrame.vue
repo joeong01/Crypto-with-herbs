@@ -1,6 +1,18 @@
 <template>
-
-  <div class="float-container" style="margin-bottom: 5%;">
+  <div class="float-container" style="margin-bottom: 5%;" v-if="role" >
+    <div class="page" style="width:100%;">
+      <nav class="page__menu page__custom-settings menu">
+        <!-- navigation bar-->
+        <ul class="menu__list r-list">
+          <li class="menu__group"><a href="/admin" class="menu__link r-link text-underlined">Homepage</a></li>
+          <li class="menu__group"><a href="/stock" class="menu__link r-link text-underlined">Stock</a></li>
+          <li class="menu__group"><a href="/merchant" class="menu__link r-link text-underlined">Merchant</a></li>
+          <li class="menu__group"><a href="/blogCOntrol" class="menu__link r-link text-underlined">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <div v-else class="float-container" style="margin-bottom: 5%;" >
     <div class="page" style="width:80%;">
         <!--navigation bar-->
       <nav class="page__menu page__custom-settings menu">
@@ -15,7 +27,6 @@
       <nav class="page_menu page__custom-settings menu">
         <ul class="menu__list r-list">
           <li class="menu__group"><a href="/cart" class="menu__link r-link text-underlined">Cart</a></li>
-          <!-- <li class="menu__group"><a href="" class="menu__link r-link text-underlined">Disconnect</a></li> -->
         </ul>
       </nav>
     </div>
@@ -28,7 +39,7 @@
     </div>
   </div>
   <router-view/>
-  <div class="footer" style="bottom: 0;">
+  <div class="footer" style="margin-top: 1%;bottom: 0;">
     <footer>
       <!--footer-->
       <div class="social" >
@@ -45,12 +56,16 @@
 </template>
 
 <script>
+import axios from 'axios';
   export default {
     data(){
       return{
         id: " ",
         logged: false,
         reloaded: '1',
+        role: false,
+        isAdmin: false,
+        temp: [],
       }
     },
     created(){
@@ -60,8 +75,8 @@
       if (localStorage.getItem('reloaded')) {
         localStorage.removeItem('reloaded');
       } else {
-          localStorage.setItem('reloaded', '1');
-          location.reload();
+        localStorage.setItem('reloaded', '1');
+        location.reload();
       }
     },
     methods:{
@@ -71,6 +86,20 @@
 
           if(this.id.length > 0){
             this.logged = true;
+            
+            const response = await axios.get("http://localhost:5000/getUsers");
+            this.temp = response.data;
+
+            for(let i = 0; i < this.temp.length; i++){
+              if(this.temp[i].userID == this.id){
+                if(this.temp[i].userType == "Customer"){
+                  this.role = false;
+                }
+                else{
+                  this.role= true;
+                }
+              }
+            }
           }
         }
         catch (err) {

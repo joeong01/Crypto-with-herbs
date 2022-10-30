@@ -1,10 +1,10 @@
 <template>
-  <div class="float-container" style="margin-bottom: 30%;">
+  <div class="float-container">
     <div class="filter">
       <!--search card-->
       <div class="card shadow mt-3">
         <div class="card-header">
-          <h5>filter and Sort</h5>
+          <h5>filter</h5>
         </div>
         <div class="card-body">
           <h6>Category List</h6>
@@ -14,19 +14,6 @@
               <CFormCheck v-if="merchants[0].merchantCategory == category.merchantCategory" type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="merchants[0].merchantName" :label="merchants[0].merchantName"  @click="selectedCategory = merchants[0].merchantCategory ; getProducts()" checked/>
               <CFormCheck v-else type="radio" :button="{ color: 'dark', variant: 'outline' }" name="categoryList" :id="category.merchantName" :label="category.merchantName"  @click="selectedCategory = category.merchantCategory ; getProducts()"/>
             </div>
-          </CButtonGroup>
-        </div>
-        <div class="card-body">
-          <h6>Sorting</h6>
-          <hr>
-          <h6>Herb Name</h6>
-          <CButtonGroup vertical role="group" aria-label="Horizontal button group">
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting1" label="Ascending" @click="selectedSort = 'productName ASC'; getProducts()" checked/>
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting2" label="Descending" @click="selectedSort = 'productName DESC'; getProducts()" />
-          <br><br>
-          <h6>Price</h6>
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting3" label="Ascending" @click="selectedSort = 'price ASC'; getProducts()" />
-            <CFormCheck type="radio" :button="{ color: 'dark', variant: 'outline' }" name="sorting" id="sorting4"  label="Descending" @click="selectedSort = 'price DESC'; getProducts()" />
           </CButtonGroup>
         </div>
       </div>
@@ -128,7 +115,7 @@ export default {
       tabPanePillsActiveKey: 1,
       selectedCategory: "",
       selectedSort: 'productName ASC',
-      selectedProduct: '',
+      selectedProduct: 0,
       count: 1,
       logged: false,
       id: "",
@@ -167,7 +154,7 @@ export default {
     },
     async check(price){
       try{
-        let id = await window.ethereum.request({method: "eth_accounts"});
+        let id = (await window.ethereum.request({method: "eth_accounts"}));
         const response = await axios.get(`http://localhost:5000/cart/${id}`);
         let owner = response.data;
         if(owner[0].totalprice != 0 ){
@@ -219,9 +206,11 @@ export default {
         for(let i =0; i < cart.length; i++){
           if(cart[i].productID == this.selectedProduct){
             found = true;
-            await axios.put(`http://localhost:5000/cart/addMore/${id}`,{
+
+            await axios.put("http://localhost:5000/cart/addMore",{
+              cartID: id,
               productID: this.selectedProduct,
-              number : this.count,
+              numberProduct : this.count,
               subtotal: price * this.count,
             });
 
@@ -249,7 +238,7 @@ export default {
           cartID: id,
         });
         
-        alert("New added into cart");
+          alert("New added into cart");
         }
       } catch (e) {
         console.log(e);
@@ -257,7 +246,7 @@ export default {
     },
     async getMerchants(){
       try{
-        const response = await axios.get("http://localhost:5000/merchant");
+        const response = await axios.get("http://localhost:5000/merchants");
         this.merchants = response.data;
         this.selectedCategory = this.merchants[0].merchantCategory;
       } catch (e){

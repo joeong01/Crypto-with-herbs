@@ -5,7 +5,9 @@ import {
   getProductsByFS,
   insertProduct,
   updateProductById,
+  updateProductStock,
   deleteProductById,
+  changeAll,
 } from "../models/productModel.js";
 
 //get all products
@@ -65,10 +67,33 @@ export const updateProduct = (req, res) => {
   });
 };
 
+export const reduceStock = (req, res) => {
+  const data = req.body;
+  const id = req.params.id;
+  updateProductStock(data, id, (err, results) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+
 // Delete Product
 export const deleteProduct = (req, res) => {
-  const id = req.params.id;
-  deleteProductById(id, (err, results) => {
+  deleteProductById(req.data, (err, results) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+export const updateAll = (req, res) => {
+  const data = req.body;
+  changeAll(data, (err, results) => {
     if (err) {
       res.send(err);
     } else {

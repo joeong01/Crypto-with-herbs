@@ -46,7 +46,7 @@ export const updateTotalPrice = (req, res) => {
   });
 };
 
-export const updateMerchant = (req, res) => {
+export const updateMerchantInCart = (req, res) => {
   const data = req.body;
   updateCartMerchant( data, (err, results) => {
     if (err) {
@@ -58,7 +58,7 @@ export const updateMerchant = (req, res) => {
 };
 
 export const clearCart = (req, res) => {
-  updateClearCart( req.params.id,(err, results) => {
+  updateClearCart( req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -99,7 +99,7 @@ export const inserCart = (req, res) => {
 
 export const addMoreSameItem = (req, res) => {
   const data = req.body;
-  updateCartSameItem( data, req.params.id, (err, results) => {
+  updateCartSameItem( data, (err, results) => {
     if (err) {
       res.send(err);
     } else {

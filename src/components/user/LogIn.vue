@@ -39,15 +39,15 @@ import axios from 'axios';
                 const response = await axios.get("http://localhost:5000/getUsers");
                 this.temp = response.data;
                 let found = false;
-
+                
                 if(this.result.length != 0){
                     try{
 
                         for(let i = 0; i < this.temp.length ; i++){
-                            if(this.temp[i].userID == this.result && this.temp[i].userType == "Customer"){
+                            if(this.temp[i].userID == this.result){
                                 alert("LogIn sucessfully");
-                                this.$router.push('/');
                                 found = true;
+                                this.$router.push('/'); 
                             }
                         }
 

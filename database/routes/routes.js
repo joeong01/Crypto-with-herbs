@@ -7,7 +7,9 @@ import {
   showProductById,
   createProduct,
   updateProduct,
+  reduceStock,
   deleteProduct,
+  updateAll
 } from "../controllers/product.js";
 
 import {
@@ -19,7 +21,7 @@ import {
   showCart,
   inserUserCart,
   updateTotalPrice,
-  updateMerchant,
+  updateMerchantInCart,
   clearCart,
   showCartDetail,
   showDetail,
@@ -32,22 +34,33 @@ import {
 
 import {
   showMerchant,
+  insertMerchant,
+  updateMerchant,
+  showMerchantCharge,
+  getWalletID,
+  updateFund,
+  resetFund,
+  plusMerchantProduct,
+  minusMerchantProduct,
+  deleteMerchant,
 } from "../controllers/merchant.js"
 
-//init express router
+import {
+  showBlogs,
+  setBlog,
+  updateBlog,
+  removeBlog,
+} from "../controllers/blog.js"
+
 const router = express.Router();
-//get all product
 router.get("/products", showProducts);
-//get single product
 router.get("/products", showProductById);
-//get product with filter and sorting
 router.get("/productsFS/:sort", showProductsByFS);
-// Create New Product
 router.post("/products", createProduct);
-// Update Product
 router.put("/products/:id", updateProduct);
-// Delete Product
-router.delete("/products/:id", deleteProduct);
+router.delete("/product/delete", deleteProduct);
+router.put("/product/reduceStock/:id", reduceStock);
+router.put("/product/updateAll", updateAll);
 
 router.get("/getUsers", showUsers);
 router.post("/createUsers", createUser);
@@ -55,18 +68,32 @@ router.post("/createUsers", createUser);
 router.get("/cart/:id", showCart);
 router.put("/cart/addNewUser", inserUserCart);
 router.put("/cart/updateTotal", updateTotalPrice);
-router.put("/cart/updateMerchant", updateMerchant);
+router.put("/cart/updateMerchant", updateMerchantInCart);
 router.put("/cart/reset/:id", clearCart);
 
 router.get("/cartDetail/:id", showCartDetail);
-router.get("/cart/detailOnly/:id",showDetail);
+router.get("/cart/detailOnly/:id", showDetail);
 router.put("/cart/addNew", inserCart);
-router.put("/cart/addMore/:id", addMoreSameItem);
+router.put("/cart/addMore", addMoreSameItem);
 router.put("/cart/updateDetail", updateItemNumber);
-router.get("/cart/remove/:id",removeCart);
-router.get("/cart/remove",removeItem);
+router.get("/cart/remove/:id", removeCart);
+router.put("/cart/removeItem", removeItem);
 
-router.get("/merchant",showMerchant);
+router.get("/merchants", showMerchant);
+router.post("/mercahnts/insertMerchant", insertMerchant);
+router.put("/merchant/updateALL", updateMerchant);
+router.get("/merchant/merchantCharge/:id", showMerchantCharge);
+router.get("/merchant/merchantWalletID/:id", getWalletID);
+router.put("/merchant/updateFund", updateFund);
+router.get("/merchant/releaseFund/:id", resetFund);
+router.get("/merchant/plus/:id", plusMerchantProduct);
+router.get("/merchant/minus/:id", minusMerchantProduct);
+router.delete("/merchant/delete", deleteMerchant);
+
+router.get("/blogs", showBlogs);
+router.post("/blog/insert", setBlog);
+router.put("/blog/update", updateBlog);
+router.put("/blog/delete", removeBlog);
 
 //export default router
 export default router;

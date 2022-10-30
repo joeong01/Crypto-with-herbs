@@ -9,10 +9,12 @@ import CheckOut from '../components/user/checkOut.vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import AdminFrame from '../components/admin/adminFrame.vue'
+import AdminHome from '../components/admin/adminHome.vue'
+import BlogControl from '../components/admin/blogControl.vue'
+import MerchantControl from '../components/admin/merchantControl.vue'
+import StockLevel from '../components/admin/stockLevel.vue'
 
 import AboutUS from '../components/user/aboutUs.vue'
-
 
 const routes = [
     { 
@@ -24,11 +26,6 @@ const routes = [
         path:'/userProduct',
         name:'UserProduct',
         component: UserProduct,
-    },
-    { 
-        path:'/admin',
-        name:'Admin',
-        component: AdminFrame,
     },
     {
         path:'/aboutus',
@@ -54,6 +51,26 @@ const routes = [
         path: '/checkOut',
         name: 'CheckOut',
         component: CheckOut
+    },
+    { 
+        path:'/admin',
+        name:'Admin',
+        component: AdminHome,
+    },
+    {
+        path: '/blogControl',
+        name:'BlogControl',
+        component: BlogControl,
+    },
+    {
+        path:'/merchant',
+        name:'MerchantControl',
+        component: MerchantControl,
+    },
+    {
+        path:'/stock',
+        name:'StockLevel',
+        component: StockLevel,
     },
 ];
 

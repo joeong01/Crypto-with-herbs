@@ -7,8 +7,8 @@
       <div style="margin-left:16%;">
         <table style="width: 80%;">
           <thead>
-            <tr>
-              <th>Product</th>
+            <tr >
+              <th style="width: 300px;">Product</th>
               <th>Name</th>
               <th>Price</th>
               <th>Quantity</th>
@@ -20,17 +20,20 @@
             <tr v-for="product in products" :key="product.productID">
               <td style="width: 300px; height: 200px;"><img width="250px" height="250px" :src="`data:image/jpg;base64,${product.image}`" ></td>
               <td>{{ product.productName }}</td>
-              <td>{{ product.cryptoType }} {{ product.price }}</td>
+              <td>{{cryptoType}} {{ product.price }}</td>
               <td>
-                <input :id="product.productID" type="number" :value="product.numberProduct" min="1" :max="product.stock" @change="checking(product.stock,product.productID, product.productName, product.price)" style="width: 100px;" required>
+                <input :id="product.productID" type="number" :value="product.numberProduct" min="1" :max="product.stock" @change="checking(product.stock, product.productID, product.productName, product.price)" style="width: 100px;" required>
               </td>
-              <td>{{ product.subtotal }}</td>
-              <td><button style="width: 100px; height: 100px; background-color: transparent; border: none;" @click="delete(product.productId)"><CIcon :icon="cilTrash" size="sm"/></button></td>
+              <td>{{cryptoType}} {{ product.subtotal }}</td>
+              <td><button style="width: 100px; height: 100px; background-color: transparent; border: none;" @click="toDelete(product.productName,product.productID)"><CIcon :icon="cilTrash" size="sm" /></button></td>
             </tr>
             <br>
             <tr>
-              <th colspan="4"><span style="padding-right: 3%">Total</span></th>
-              <td>{{ total }}</td>
+              <th colspan="4">Total</th>
+              <td>{{cryptoType}} {{ total }}</td>
+            </tr>
+            <tr>
+              <td colspan="6"><CButton component="a" color="primary" shape="rounded-pill" href="/checkOut" role="button">Proceed to check out</CButton></td>
             </tr>
           </tbody>
         </table>
@@ -43,10 +46,12 @@
 import axios from "axios";
 import { CIcon } from '@coreui/icons-vue';
 import { cilTrash } from '@coreui/icons';
+import { CButton } from '@coreui/vue';
 
 export default {
   components: {
     CIcon,
+    CButton,
   },
   setup() {
     return {
@@ -57,13 +62,12 @@ export default {
     return{
       products: [],
       temp: [],
-      toast: [],
       total: 0,
+      cryptoType: "",
       cartID: "",
     }
   },
   created(){
-    this.getID();
     this.getCart();
   },
   methods: {
@@ -77,7 +81,7 @@ export default {
           this.temp[i].image = Buffer.from(this.temp[i].image).toString('base64');
           this.products.push(this.temp[i]);
         }
-
+        this.cryptoType = this.products[0].cryptoType;
         this.total = ((await axios.get(`http://localhost:5000/cart/${ID}`)).data)[0].totalprice;
         
       }
@@ -88,40 +92,57 @@ export default {
     checking(max,id,name,price){
       if(document.getElementById(id).value > max){
         document.getElementById(id).value = max;
-
         alert( name + " has reach maximum value");
       }
       else if(document.getElementById(id).value < 1){
         document.getElementById(id).value = 1;
         alert( name + " has reach minimum value");
       }
-      
       this.update(id,price);
     },
     async update(id,price){
-      let sub = price * document.getElementById(id).value;
+      let num = document.getElementById(id).value;
+      let sub = price * num;
+      let ID = await window.ethereum.request({method: "eth_accounts"});
+
       await axios.put("http://localhost:5000/cart/updateDetail",{
+        newNumber: num,
         subtotal: sub,
-        newNumber: document.getElementById(id).value,
-        cartID: this.cartID,
+        cartID: ID,
         productID: id,
       });
 
-      await axios.put("http://localhost:5000/cart/updateTotal",{
+      await axios.get("http://localhost:5000/cart/updateTotal",{
         userID: this.cartID,
         cartID: this.cartID,
       });
 
       location.reload();
     },
-    // eslint-disable-next-line no-unused-vars
-    delete(product) {
-      return ;
+    async toDelete(name,id) {
+      if(confirm("Delete " + name + " from cart??")){
+        try{
+          let ID = await window.ethereum.request({method: "eth_accounts"});
+          let sr = (await axios.get("http://localhost:5000/cart/removeItem",{
+            cartID: ID,
+            productID: id,
+          }));
+
+          console.log(sr);
+
+          await axios.get("http://localhost:5000/cart/updateTotal",{
+            userID: this.cartID,
+            cartID: this.cartID,
+          });
+          
+          alert("Removed");
+
+          location.reload();
+        } catch (e){
+          console.log(e);
+        }
+      }
     },
-    async getID(){
-      this.cartID = await window.ethereum.request({method: "eth_accounts"});
-      console.log(this.cartID);
-    }
   }
 };
 </script>

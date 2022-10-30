@@ -63,7 +63,7 @@
   .carousel {
     width: 750px;
     height: 550px;
-    margin-left: 32.5%;
+    margin-left: 30%;
     margin-top: 10px;
     background-color: rgb(173, 173, 173);;
   }

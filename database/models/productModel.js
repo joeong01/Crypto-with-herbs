@@ -1,7 +1,6 @@
 //import connection
 import db from "../config/database.js";
 
-
 //get all products
 export const getProducts = (result) => {
   db.query("SELECT * FROM product", (err, results) => {
@@ -59,8 +58,23 @@ export const insertProduct = (data, result) => {
 // Update Product to Database
 export const updateProductById = (data, id, result) => {
   db.query(
-    "UPDATE product SET product_name = ?, product_price = ? WHERE product_id = ?",
-    [data.product_name, data.product_price, id],
+    "UPDATE product SET productName = ?, price = ? WHERE productID = ?",
+    [data.productName, data.price, id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        result(err, null);
+      } else {
+        result(null, results);
+      }
+    }
+  );
+};
+
+export const updateProductStock = (data, id, result) => {
+  db.query(
+    "UPDATE product SET stock = ?  WHERE productID = ?",
+    [data.stock, id],
     (err, results) => {
       if (err) {
         console.log(err);
@@ -74,7 +88,7 @@ export const updateProductById = (data, id, result) => {
 
 // Delete Product to Database
 export const deleteProductById = (id, result) => {
-  db.query("DELETE FROM product WHERE product_id = ?", [id], (err, results) => {
+  db.query("DELETE FROM product WHERE productID = ?", [id], (err, results) => {
     if (err) {
       console.log(err);
       result(err, null);
@@ -84,3 +98,14 @@ export const deleteProductById = (id, result) => {
   });
 };
 
+export const changeAll = (data,result) => {
+  db.query("UPDATE product SET `productName` = ? , `price` = ? , `stock` = ?, `description` = ? , `preservation` = ? WHERE `productID` = ?;",
+  [data.productName, data.price, data.stock, data.description, data.preservation, data.productID], (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};

@@ -100,9 +100,9 @@ export const setCart = (data,result) => {
   });
 };
 
-export const updateCartSameItem = (data,id,result) => {
+export const updateCartSameItem = (data, result) => {
   db.query("UPDATE shoppingcartdetail SET numberProduct = numberProduct + ? , subtotal = subtotal + ? WHERE cartID = ? AND productID = ?",
-  [data.number, data.subtotal, id, data.productID],
+  [data.numberProduct, data.subtotal, data.cartID, data.productID],
   (err, results) => {
     if (err) {
       console.log(err);
@@ -113,9 +113,9 @@ export const updateCartSameItem = (data,id,result) => {
   });
 };
 
-export const updateCartNumber = (data,result) => {
-  db.query("UPDATE shoppingcartdetail SET subtotal = ?, numberProduct = ?  WHERE cartID = ? AND productID = ?",
-  [data.subtotal, data.newNumber, data.cartID, data.productID ],
+export const updateCartNumber = (data, result) => {
+  db.query("UPDATE shoppingcartdetail SET numberProduct = ? , subtotal = ? WHERE cartID = ? AND productID = ?",
+  [data.newNumber, data.subtotal, data.cartID, data.productID],
   (err, results) => {
     if (err) {
       console.log(err);
@@ -127,7 +127,7 @@ export const updateCartNumber = (data,result) => {
 };
 
 export const deleteCart= (id,result) => {
-  db.query("DELETE FROM shoppingcartdetail where cartID = ?",
+  db.query("DELETE FROM shoppingcartdetail WHERE cartID = ?",
   [id],
   (err, results) => {
     if (err) {
@@ -140,8 +140,8 @@ export const deleteCart= (id,result) => {
 };
 
 export const deleteItem= (data,result) => {
-  db.query("DELETE FROM shoppingcartdetail where cartID = ? AND productID = ?",
-  [data.id, data.itemID],
+  db.query("DELETE FROM shoppingcartdetail WHERE cartID = ? AND productID = ?",
+  [data.cartID, data.productID],
   (err, results) => {
     if (err) {
       console.log(err);
