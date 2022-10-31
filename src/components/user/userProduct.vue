@@ -68,6 +68,7 @@
                             </div>
                           </CDropdownMenu>
                         </CDropdown>
+                        <CButton color="primary" v-if="item.stock == 0" style="margin-bottom: 3%;" disabled>Add to Cart</CButton>
                         <CButton color="primary" @click="selectedProduct = item.productID ; check(item.price); item.details = 0" style="margin-bottom: 3%;">Add to Cart</CButton>
                       </CModelFooter>
                       <CModalFooter v-else>
@@ -128,7 +129,7 @@ export default {
   methods:{
     async getProducts() {
       try {
-        const response = await axios.get(`http://localhost:5000/productsFS/${this.selectedSort}`);
+        const response = await axios.get("http://localhost:5000/productsEndabled");
         this.temps = response.data;
         this.items = [];
         for(let i =0; i < this.temps.length ; i++){

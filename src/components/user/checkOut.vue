@@ -130,8 +130,7 @@ export default {
             if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != this.balance){
                 this.createReciept();
             }
-
-            this.createReciept();
+            
         },
         async createReciept(){
             let ID = await window.ethereum.request({method: "eth_accounts"});

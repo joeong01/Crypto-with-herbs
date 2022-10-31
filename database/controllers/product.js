@@ -7,6 +7,7 @@ import {
   updateProductStock,
   deleteProductById,
   changeAll,
+  changeProductStatus,
   clearAll,
 } from "../models/productModel.js";
 
@@ -23,7 +24,7 @@ export const showProducts = (req, res) => {
 
 //get single product
 export const showProductById = (req, res) => {
-  getProductById(req.params.id, (err, results) => {
+  getProductById(req.params.sort, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -69,6 +70,16 @@ export const reduceStock = (req, res) => {
 // Delete Product
 export const deleteProduct = (req, res) => {
   deleteProductById(req.params.id, (err, results) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+export const updateProductStatus = (req, res) => {
+  changeProductStatus(req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {

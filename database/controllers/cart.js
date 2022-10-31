@@ -131,8 +131,7 @@ export const removeCart = (req, res) => {
 };
 
 export const removeItem = (req, res) => {
-  const data = req.body
-  deleteItem( data, (err, results) => {
+  deleteItem( req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {

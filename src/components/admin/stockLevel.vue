@@ -61,7 +61,11 @@
                 <span style="color: transparent;">
                   <CModal size="lg" alignment="center" :visible="item.details" @close="item.details = 0;" >
                     <CModalHeader>
-                      <CModalTitle><span style="color: black;"><input id="name" :value="item.productName" type="text" @change="checking(item.productID)"/></span></CModalTitle>
+                      <CModalTitle>
+                        <span style="color: black;"><input id="name" :value="item.productName" type="text" @change="checking(item.productID)"/></span>&emsp;&emsp;&emsp;&emsp;&emsp;                          
+                        <label>Enable:&emsp;  </label><input v-if="item.enable == 1" :id="item.productID + 'enable'" value="True" readonly/>
+                        <input v-else :id="item.productID + 'enable'" value="False" readonly/>
+                      </CModalTitle>
                     </CModalHeader>
                     <CModalBody>
                       <img style="width:300px; height:300px; margin-bottom: 1%;" :src="`data:image/jpg;base64,${item.image}`" />
@@ -75,8 +79,9 @@
                     </CModalBody>
                     <span style="color: black;">
                       <CModelFooter>
-                        <CButton :id="item.productID" color="primary" @click="updateDatabse(item.productID); item.details = 0" style="margin-bottom: 3%;">Confirm Edit</CButton>
-                        <CButton color="danger" @click="removeProduct(item.productID); item.details = 0" style="margin-bottom: 3%;">Delete</CButton>
+                        <CButton :id="item.productID" color="primary" @click="updateDatabse(item.productID); item.details = 0" style="margin-bottom: 3%;margin-right: 1%;">Confirm Edit</CButton>
+                        <CButton v-if="item.enable == 1" color="danger" @click="removeProduct(item.productID); item.details = 0" style="margin-bottom: 3%;">Disable</CButton>
+                        <CButton v-else color="primary" @click="removeProduct(item.productID); item.details = 0" style="margin-bottom: 3%;">Enable</CButton>
                       </CModelFooter>
                     </span>
                   </CModal>
@@ -125,7 +130,7 @@ export default {
   methods:{
     async getProducts() {
       try {
-        const response = await axios.get(`http://localhost:5000/productsFS/${this.selectedSort}`);
+        const response = await axios.get("http://localhost:5000/products");
         this.temps = response.data;
         this.newID = (this.temps.length+1);
         this.items = [];
@@ -180,6 +185,7 @@ export default {
       }
     },
     async addNew(){
+      
       let filesSelected = document.getElementById('Image').files;
 
       await axios.post("http://localhost:5000/productCreate",{
@@ -195,17 +201,18 @@ export default {
       });
 
       await axios.put(`http://localhost:5000/merchantPlus/${this.toAddMerchant}`);
+
     },  
     async removeProduct(ID){
-      if(confirm("Are you sure wan to delete \"" + document.getElementById("name").value +"\" ?")){
-        await axios.delete(`http://localhost:5000/cart/removeAllSameProduct/${ID}`);
-        await axios.delete(`http://localhost:5000/productDelete/${ID}`);
-        await axios.put(`http://localhost:5000/merchantMinus/${this.toAddMerchant}`);
+      if(confirm("Are you sure wan to change status for \"" + document.getElementById("name").value +"\" ?")){
+        await axios.get(`http://localhost:5000/product/updateStatus/${ID}`);
+        alert("Status Changed");
+        window.location.reload();
       }
     },
     async getMerchants(){
       try{
-        const response = await axios.get("http://localhost:5000/merchants");
+        const response = await axios.get("http://localhost:5000/allMerchants");
         this.merchants = response.data;
         this.selectedCategory = this.merchants[0].merchantCategory;
       } catch (e){

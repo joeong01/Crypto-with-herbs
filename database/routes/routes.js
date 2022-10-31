@@ -10,7 +10,7 @@ import {
   deleteProduct,
   updateAll,
   removeAll,
-  
+  updateProductStatus,
 } from "../controllers/product.js";
 
 import {
@@ -57,12 +57,13 @@ import {
 
 const router = express.Router();
 router.get("/products", showProducts);
+router.get("/productsEndabled", showProductsByFS);
 router.get("/products", showProductById);
-router.get("/productsFS/:sort", showProductsByFS);
 router.post("/productCreate", createProduct);
 router.delete("/product/productDelete/:id", deleteProduct);
 router.put("/product/reduceStock/:id", reduceStock);
 router.put("/product/updateAll", updateAll);
+router.get("/product/updateStatus/:id", updateProductStatus);
 router.delete("/product/removeAll", removeAll);
 
 router.get("/getUsers", showUsers);
@@ -80,7 +81,7 @@ router.put("/cart/addNew", inserCart);
 router.put("/cart/addMore", addMoreSameItem);
 router.put("/cart/updateDetail", updateItemNumber);
 router.get("/cart/remove/:id", removeCart);
-router.put("/cart/removeCartProduct/id", removeItem);
+router.delete("/cart/removeCartProduct/id", removeItem);
 router.delete("/cart/removeAllSameProduct", removeAllSameProduct);
 
 router.get("/allMerchants", showAllMerchant);

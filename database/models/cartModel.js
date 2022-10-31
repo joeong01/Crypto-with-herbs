@@ -139,9 +139,9 @@ export const deleteCart = (id,result) => {
   });
 };
 
-export const deleteItem = (data,result) => {
-  db.query("DELETE FROM `shoppingcartdetail` WHERE `cartID` = \"?\" AND `productID` = ?",
-  [data.cartID, data.productID],
+export const deleteItem = (id,result) => {
+  db.query("DELETE FROM `shoppingcartdetail` WHERE `id` = ?",
+  [id],
   (err, results) => {
     if (err) {
       console.log(err);

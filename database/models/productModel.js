@@ -14,7 +14,7 @@ export const getProducts = (result) => {
 };
 
 export const getProductsByFS = (sort, result) => {
-  db.query( "SELECT * FROM product ORDER BY ? ", 
+  db.query( "SELECT * FROM product WHERE enable = 1 ", 
   [sort],
     (err, results) => {
       if (err) {
@@ -74,6 +74,18 @@ export const updateProductStock = (data, id, result) => {
 // Delete Product to Database
 export const deleteProductById = (id, result) => {
   db.query("DELETE FROM product WHERE productID = ?", [id], (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
+export const changeProductStatus = (id,result) => {
+  db.query("UPDATE product SET enable = !enable WHERE `productID` = ?;",
+  [id], (err, results) => {
     if (err) {
       console.log(err);
       result(err, null);
