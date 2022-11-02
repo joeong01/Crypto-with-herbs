@@ -154,7 +154,7 @@ export default {
         },
         async payment(){
             // let hex = (this.total*10**18);
-            // let web3= new Web3(Web3.givenProvider);
+            let web3= new Web3(Web3.givenProvider);
             // let account = (await web3.eth.getAccounts()).toString();
             
             // await web3.eth.sendTransaction({
@@ -165,10 +165,9 @@ export default {
             //     console.log(reciept);
             // });
 
-            // if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != this.balance){
-            //     this.createReciept();
-            // }
-            this.createReciept();
+            if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != this.balance){
+                console.log("HHHHIII");
+            }
         },
         async createReciept(){
             let ID = await window.ethereum.request({method: "eth_accounts"});
@@ -178,7 +177,7 @@ export default {
             this.showInvoice = true;
             await axios.put("http://localhost:5000/invoice/insert",{
                 userID: ID,
-                plateformcharge: this.toCharge,
+                platformcharge: this.toCharge,
                 totalprice: this.total,
                 remarks: document.getElementById("remarks").value,
                 name: document.getElementById("Name").value ,
