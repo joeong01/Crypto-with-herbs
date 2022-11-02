@@ -4,7 +4,7 @@ import express from "express";
 import {
   showProducts,
   showProductsByFS,
-  showProductById,
+  showProductByCategory,
   createProduct,
   reduceStock,
   deleteProduct,
@@ -46,6 +46,7 @@ import {
   plusMerchantProduct,
   minusMerchantProduct,
   disableMerchant,
+  showSelectedMerchant,
 } from "../controllers/merchant.js"
 
 import {
@@ -55,10 +56,18 @@ import {
   removeBlog,
 } from "../controllers/blog.js"
 
+import {
+  showAllInvoice,
+  showInvoiceDetail,
+  insertInvoice,
+  insertInvoiceDetails,
+  showInvoice
+} from "../controllers/invoice.js"
+
 const router = express.Router();
 router.get("/products", showProducts);
 router.get("/productsEndabled", showProductsByFS);
-router.get("/products", showProductById);
+router.get("/products/merchant/:id", showProductByCategory);
 router.post("/productCreate", createProduct);
 router.delete("/product/productDelete/:id", deleteProduct);
 router.put("/product/reduceStock/:id", reduceStock);
@@ -86,6 +95,7 @@ router.delete("/cart/removeAllSameProduct", removeAllSameProduct);
 
 router.get("/allMerchants", showAllMerchant);
 router.get("/merchants", showMerchant);
+router.get("/merchant/getSelects/:id", showSelectedMerchant);
 router.post("/merchant/insertMerchant", insertMerchant);
 router.put("/merchant/updateAll", updateMerchant);
 router.get("/merchant/merchantCharge/:id", showMerchantCharge);
@@ -101,5 +111,10 @@ router.put("/blog/insert", setBlog);
 router.put("/blog/update", updateBlog);
 router.put("/blog/delete", removeBlog);
 
+router.get("/invoice/all", showAllInvoice);
+router.get("invoice/user/:id", showInvoice);
+router.get("/invoiceDetail/:id", showInvoiceDetail);
+router.put("/invoice/insert", insertInvoice);
+router.put("/invoiceDetail/insert", insertInvoiceDetails);
 //export default router
 export default router;

@@ -10,7 +10,7 @@
               <CModalTitle><span style="color: black;"><input id="Name" type="text" placeholder="Name" @change="validation()"/></span></CModalTitle>
             </CModalHeader>
             <CModalBody>
-              <label>Image: &emsp;</label><input type="file" accept="image/*" id="Image" name="Image"/>&emsp;&emsp;
+              <label>Image: &emsp;</label><input type="file" accept="image/*" id="Image" name="Image" @change="validation()"/>&emsp;&emsp;
               <label>Merchant: &emsp;</label><CDropdown :color="primary" :togglerText="count" style="margin-bottom: 3%; margin-right: 10%" direction="center">
                 <CDropdownToggle :color="primary">{{ toAddMerchant }}</CDropdownToggle>
                 <CDropdownMenu style="width: fit-content; height: fit-content;">
@@ -120,7 +120,6 @@ export default {
       selectedCategory: "",
       selectedSort: 'productName ASC',
       toAdd: false,
-      newID: 0,
     };
   },
   mounted() {
@@ -132,7 +131,6 @@ export default {
       try {
         const response = await axios.get("http://localhost:5000/products");
         this.temps = response.data;
-        this.newID = (this.temps.length+1);
         this.items = [];
         for(let i =0; i < this.temps.length ; i++){
           if(this.temps[i].merchantCategory == this.selectedCategory){
@@ -167,12 +165,12 @@ export default {
     },
     async updateDatabse(id){
       const response = await axios.put("http://localhost:5000/product/updateAll",{
-          productName: document.getElementById("name").value,
-          price: document.getElementById("price").value,
-          stock: document.getElementById("stock").value,
-          description: document.getElementById("description").value,
-          preservation: document.getElementById("preservation").value,
-          productID: id,
+        productName: document.getElementById("name").value,
+        price: document.getElementById("price").value,
+        stock: document.getElementById("stock").value,
+        description: document.getElementById("description").value,
+        preservation: document.getElementById("preservation").value,
+        productID: id,
       });
       console.log(response);
     },
@@ -186,21 +184,36 @@ export default {
     },
     async addNew(){
       
-      let filesSelected = document.getElementById('Image').files;
+      let img = document.querySelector('img');
+      let merchant = this.toAddMerchant;
+      let canvas = document.createElement('canvas');
+      canvas.width = img.clientWidth;
+      canvas.height = img.clientHeight;
 
-      await axios.post("http://localhost:5000/productCreate",{
-        productID: this.newID,
+      let context = canvas.getContext('2d');
+
+      context.drawImage(img, 0, 0);
+
+      canvas.toBlob(async function(blob) 
+      {
+        await axios.post("http://localhost:5000/productCreate",{
         productName: document.getElementById("Name").value,
         stock: document.getElementById("Stock").value, 
         cryptoType: document.getElementById("toAddFundType").value, 
         price: document.getElementById("Price").value, 
-        merchantCategory: this.toAddMerchant, 
+        merchantCategory: merchant, 
         description: document.getElementById("Description").value, 
         preservation: document.getElementById("Preservation").value,
-        image: filesSelected,
+        image: blob,
+        
       });
 
-      await axios.put(`http://localhost:5000/merchantPlus/${this.toAddMerchant}`);
+      await axios.put(`http://localhost:5000/merchantPlus/${merchant}`);
+
+      window.location.reload();
+
+      console.log(blob);
+      }, 'image/*');
 
     },  
     async removeProduct(ID){

@@ -4,6 +4,7 @@ import UserProduct from '../components/user/userProduct.vue'
 import UserBlog from '../components/user/userBlog.vue'
 import LogIn from '../components/user/LogIn.vue'
 import Cart from '../components/user/userCart.vue'
+import Invoice from '../components/user/userInvoice.vue'
 import CheckOut from '../components/user/checkOut.vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -46,6 +47,11 @@ const routes = [
         path: '/cart',
         name: 'Cart',
         component: Cart,
+    },
+    {
+        path: '/invoice',
+        name: 'invoice',
+        component: Invoice,
     },
     {
         path: '/checkOut',

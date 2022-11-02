@@ -12,6 +12,19 @@ export const getAllMerchant = (result) => {
   });
 };
 
+export const getSelectedMerchant = (id,result) => {
+  db.query("SELECT merchantName FROM merchant WHERE merchantCategory = ?",[id],
+  (err, results) => {
+    if (err) {
+      console.log(err);
+      result(err, null);
+    } else {
+      result(null, results);
+    }
+  });
+};
+
+
 export const getMerchant = (result) => {
   db.query("SELECT * FROM merchant WHERE enable = 1",
   (err, results) => {

@@ -1,7 +1,7 @@
 //import functions from Product model
 import {
   getProducts,
-  getProductById,
+  getProductByMerchant,
   getProductsByFS,
   insertProduct,
   updateProductStock,
@@ -23,8 +23,8 @@ export const showProducts = (req, res) => {
 };
 
 //get single product
-export const showProductById = (req, res) => {
-  getProductById(req.params.sort, (err, results) => {
+export const showProductByCategory = (req, res) => {
+  getProductByMerchant(req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {
@@ -42,6 +42,7 @@ export const showProductsByFS = (req, res) => {
     }
   });
 }
+
 
 //create new product
 export const createProduct = (req, res) => {

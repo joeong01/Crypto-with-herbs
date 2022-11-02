@@ -153,7 +153,7 @@ export const deleteItem = (id,result) => {
 };
 
 export const deleteAllSame= (id, result) => {
-  db.query("DELETE FROM `shoppingcartdetail` WHERE `productID` = ?",
+  db.query("DELETE FROM `shoppingcartdetail` WHERE `id` = ?",
   [id],
   (err, results) => {
     if (err) {

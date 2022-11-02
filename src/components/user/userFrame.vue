@@ -27,6 +27,7 @@
       <nav class="page_menu page__custom-settings menu">
         <ul class="menu__list r-list">
           <li class="menu__group"><a href="/cart" class="menu__link r-link text-underlined">Cart</a></li>
+          <li class="menu__group"><a href="/invoice" class="menu__link r-link text-underlined">Invoice</a></li>
         </ul>
       </nav>
     </div>

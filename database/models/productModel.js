@@ -28,9 +28,9 @@ export const getProductsByFS = (sort, result) => {
 };
 
 //get single product
-export const getProductById = (id, result) => {
+export const getProductByMerchant = (id, result) => {
   db.query(
-    "SELECT * FROM PRODUCT WHERE id = ?",
+    "SELECT * FROM PRODUCT WHERE merchantCategory = ?",
     [id],
     (err, results) => {
       if (err) {
@@ -58,7 +58,7 @@ export const insertProduct = (data, result) => {
 
 export const updateProductStock = (data, id, result) => {
   db.query(
-    "UPDATE product SET stock = ?  WHERE productID = ?",
+    "UPDATE product SET stock = stock - ?  WHERE productID = ?",
     [data.stock, id],
     (err, results) => {
       if (err) {
