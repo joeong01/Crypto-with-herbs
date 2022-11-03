@@ -12,7 +12,7 @@ export const getAllInvoice= (result) => {
     });
 };
 export const getInvoice= (id, result) => {
-    db.query("SELECT * FROM invoice WHERE userID = ?",[id],
+    db.query("SELECT * FROM invoice WHERE userID = ? ORDER BY time DESC",[id] ,
     (err, results) => {
         if (err) {
             console.log(err);
@@ -23,8 +23,8 @@ export const getInvoice= (id, result) => {
     });
 };
 
-export const getInvoiceDetail= (id, result) => {
-    db.query("SELECT * FROM InvoiceDetail WHERE invoiceID = ?",[id],
+export const getInvoiceDetail= (result) => {
+    db.query("SELECT * FROM invoicedetail ORDER BY invoiceID",
     (err, results) => {
         if (err) {
             console.log(err);

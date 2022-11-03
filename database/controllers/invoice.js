@@ -27,7 +27,7 @@ export const showInvoice = (req, res) => {
 };
 
 export const showInvoiceDetail = (req, res) => {
-    getInvoiceDetail(req.params.id,(err, results) => {
+    getInvoiceDetail((err, results) => {
         if (err) {
         res.send(err);
         } else {

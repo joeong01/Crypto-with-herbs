@@ -9,13 +9,13 @@
                             <input type="text" class="form-control" id="Name" name="name" placeholder="Name" @change="checking()" />
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="number" name="number" placeholder="Phone number" @change="checking()" />
+                            <input type="text" class="form-control" id="Number" name="number" placeholder="Phone number" @change="checking()" />
                         </div>
                         <div class="col-md-12 form-group p_star">
-                            <textarea type="text" class="form-control" id="address" name="address" placeholder="address" rows="3" @change="checking()" ></textarea>
+                            <textarea type="text" class="form-control" id="Address" name="address" placeholder="Address" rows="3" @change="checking()" ></textarea>
                         </div>
                         <div class="col-md-12 form-group">
-                            <textarea class="form-control" name="remarks" id="remarks" rows="1" placeholder="Remarks" maxlength="100"></textarea>
+                            <textarea class="form-control" name="remarks" id="Remarks" rows="1" placeholder="Remarks" maxlength="100"></textarea>
                         </div>
 
                         <CButton id="toPay" @click="payment()" color="primary" shape="rounded-pill" >Pay with Metamask</CButton>
@@ -115,6 +115,7 @@ export default {
     },
     methods:{
         async getCart() {
+            document.getElementById("toPay").setAttribute("disabled","disabled");
             try{
                 let ID = await window.ethereum.request({method: "eth_accounts"});
                 const response = await axios.get(`http://localhost:5000/cart/${ID}`);
@@ -123,15 +124,14 @@ export default {
                 this.cartDetail = (await axios.get(`http://localhost:5000/cartDetail/${ID}`)).data;
                 this.cryptoType = (await axios.get(`http://localhost:5000/cartDetail/${ID}`)).data[0].cryptoType;     
                 this.charges = (await axios.get(`http://localhost:5000/merchant/merchantCharge/${this.merchant}`)).data[0].platformCharges;
-                this.toCharge = this.cart * this.charges;
+                this.toCharge =(this.cart.toPrecision(7) * this.charges.toPrecision(7));
                 this.name = (await axios.get(`http://localhost:5000/merchant/getSelects/${this.merchant}`)).data[0].merchantName;
                 this.id = ((await axios.get("http://localhost:5000/invoice/all")).data).length + 1;
 
-                this.total = (this.cart + this.toCharge).toFixed(7);
+                this.total = (this.cart + this.toCharge).toPrecision(7);
                 let web3= new Web3(Web3.givenProvider);
-                this.balance = (await web3.eth.getBalance( (await web3.eth.getAccounts()).toString()))/10**18;
+                this.balance = ((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString()))/10**18).toPrecision(10);
 
-                document.getElementById("toPay").setAttribute("disabled","disabled");
 
             }
             catch (e){
@@ -139,10 +139,9 @@ export default {
             }
         },
         checking(){
-            if( document.getElementById("Name").value != "" && document.getElementById("number").value != "" && document.getElementById("address").value != "" ){
+            if( document.getElementById("Name").value != "" && document.getElementById("Number").value != "" && document.getElementById("Address").value != "" ){
                 if( this.balance>this.total ){
                     document.getElementById("toPay").removeAttribute("disabled");
-                    document.getElementById("remarks").value = "-";
                 }
                 else{
                     alert("Not enough fund to pay");
@@ -153,39 +152,41 @@ export default {
             }
         },
         async payment(){
-            // let hex = (this.total*10**18);
+            document.getElementById("Remarks").value = "-";
+            let hex = (this.total*10**18);
             let web3= new Web3(Web3.givenProvider);
-            // let account = (await web3.eth.getAccounts()).toString();
+            let account = (await web3.eth.getAccounts()).toString();
             
-            // await web3.eth.sendTransaction({
-            //     from: account,
-            //     to: "0xf71beb0f1512cf8447cd4d5cc8bc424b5d5d118a",
-            //     value: hex,
-            // }).then(async function(reciept){
-            //     console.log(reciept);
-            // });
+            await web3.eth.sendTransaction({
+                from: account,
+                to: "0xf71beb0f1512cf8447cd4d5cc8bc424b5d5d118a",
+                value: hex,
+            }).then(async function(reciept){
+                console.log(reciept);
+            });
 
-            if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != this.balance){
-                console.log("HHHHIII");
+            if(((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString()))/10**18) != this.balance){
+                this.createReciept();
             }
         },
         async createReciept(){
             let ID = await window.ethereum.request({method: "eth_accounts"});
             let temps = (await axios.get("http://localhost:5000/products")).data;
-            // let fund = (this.total*(1-this.toCharge)).toFixed(7);
+            let fund = (this.total*(1-this.toCharge)).toFixed(7);
             let temp = (await axios.get(`http://localhost:5000/cartDetail/${ID}`)).data;
             this.showInvoice = true;
             await axios.put("http://localhost:5000/invoice/insert",{
                 userID: ID,
                 platformcharge: this.toCharge,
                 totalprice: this.total,
-                remarks: document.getElementById("remarks").value,
+                remarks: document.getElementById("Remarks").value,
                 name: document.getElementById("Name").value ,
-                address: document.getElementById("address").value,
-                phone: document.getElementById("number").value,
+                address: document.getElementById("Address").value,
+                phone: document.getElementById("Number").value,
                 cointype: this.cryptoType,
                 merchant: this.name,
             });
+
             for(let i =0; i< temps.length; i++){
                 for(let o = 0; o < temp.length; o++){
                     if(temp[o].productID == temps[i].productID){
@@ -196,25 +197,27 @@ export default {
                             number: temp[o].numberProduct,
                             subTotal: temp[o].subtotal,
                         });
+
+                        console.log(temps[i].productName);
                     }
                 }
             }
 
-            // for(let i =0; i< temps.length; i++){
-            //     for(let o = 0; o < temp.length; o++){
-            //         if(temp[o].productID == temps[i].productID){
-            //             await axios.put(`http://localhost:5000/product/reduceStock/${temp[0].productID}`,{
-            //                 stock: temp[o].numberProduct,
-            //             });
-            //         }
-            //     }
-            // }
-            // await axios.put("http://localhost:5000/merchant/updateFund",{
-            //     fund: fund,
-            //     id: this.merchant,
-            // });
-            // await axios.get(`http://localhost:5000/cart/remove/${ID}`);
-            // await axios.put(`http://localhost:5000/cart/reset/${ID}`);
+            for(let i =0; i< temps.length; i++){
+                for(let o = 0; o < temp.length; o++){
+                    if(temp[o].productID == temps[i].productID){
+                        await axios.put(`http://localhost:5000/product/reduceStock/${temp[0].productID}`,{
+                            stock: temp[o].numberProduct,
+                        });
+                    }
+                }
+            }
+            await axios.put("http://localhost:5000/merchant/updateFund",{
+                fund: fund,
+                id: this.merchant,
+            });
+            await axios.get(`http://localhost:5000/cart/remove/${ID}`);
+            await axios.put(`http://localhost:5000/cart/reset/${ID}`);
 
             alert("done payment");
             document.getElementById("toPay").setAttribute("disabled","disabled");

@@ -112,8 +112,8 @@ router.put("/blog/update", updateBlog);
 router.put("/blog/delete", removeBlog);
 
 router.get("/invoice/all", showAllInvoice);
-router.get("invoice/user/:id", showInvoice);
-router.get("/invoiceDetail/:id", showInvoiceDetail);
+router.get("/invoice/user/:id", showInvoice);
+router.get("/invoiceDetail", showInvoiceDetail);
 router.put("/invoice/insert", insertInvoice);
 router.put("/invoiceDetail/insert", insertInvoiceDetails);
 //export default router
