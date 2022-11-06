@@ -98,7 +98,9 @@ export default {
         document.getElementById(id).value = 1;
         alert( name + " has reach minimum value");
       }
-      this.update(id,price);
+      else{
+        this.update(id,price);
+      }
     },
     async update(id,price){
       let num = document.getElementById(id).value;
@@ -124,13 +126,15 @@ export default {
         try{
           await axios.delete(`http://localhost:5000/cart/removeCartProduct/${id}`);
 
-          await axios.get("http://localhost:5000/cart/updateTotal",{
-            userID: this.cartID,
-            cartID: this.cartID,
-          });
+          this.getCart();
+          
+          if(this.temp.length == 0){
+            await axios.get(`http://localhost:5000/cart/remove/${id}`);
+            await axios.put(`http://localhost:5000/cart/reset/${id}`);
+          }
           
           alert("Removed");
-          // location.reload();
+          location.reload();
         } catch (e){
           console.log(e);
         }

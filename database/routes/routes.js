@@ -1,68 +1,17 @@
 //import express
 import express from "express";
 //import functions from controller
-import {
-  showProducts,
-  showProductsByFS,
-  showProductByCategory,
-  createProduct,
-  reduceStock,
-  deleteProduct,
-  updateAll,
-  removeAll,
-  updateProductStatus,
-} from "../controllers/product.js";
+import { showProducts, showProductsByFS, showProductByCategory, createProduct, reduceStock, deleteProduct, updateAll, removeAll, updateProductStatus,} from "../controllers/product.js";
 
-import {
-  showUsers,
-  createUser,
-} from "../controllers/user.js";
+import { showUsers, createUser } from "../controllers/user.js";
 
-import {
-  showCart,
-  inserUserCart,
-  updateTotalPrice,
-  updateMerchantInCart,
-  clearCart,
-  showCartDetail,
-  showDetail,
-  inserCart,
-  addMoreSameItem,
-  updateItemNumber,
-  removeCart,
-  removeItem,
-  removeAllSameProduct,
-} from "../controllers/cart.js"
+import { showCart, inserUserCart, updateTotalPrice, updateMerchantInCart, clearCart, showCartDetail, showDetail, inserCart,addMoreSameItem, updateItemNumber, removeCart, removeItem } from "../controllers/cart.js"
 
-import {
-  showAllMerchant,
-  showMerchant,
-  insertMerchant,
-  updateMerchant,
-  showMerchantCharge,
-  getWalletID,
-  updateFund,
-  resetFund,
-  plusMerchantProduct,
-  minusMerchantProduct,
-  disableMerchant,
-  showSelectedMerchant,
-} from "../controllers/merchant.js"
+import { showAllMerchant, showMerchant, insertMerchant, updateMerchant, showMerchantCharge, getWalletID, updateFund, resetFund, plusMerchantProduct, minusMerchantProduct, disableMerchant, showSelectedMerchant,} from "../controllers/merchant.js"
 
-import {
-  showBlogs,
-  setBlog,
-  updateBlog,
-  removeBlog,
-} from "../controllers/blog.js"
+import { showBlogs, setBlog, updateBlog, removeBlog, } from "../controllers/blog.js"
 
-import {
-  showAllInvoice,
-  showInvoiceDetail,
-  insertInvoice,
-  insertInvoiceDetails,
-  showInvoice
-} from "../controllers/invoice.js"
+import { showAllInvoice, showInvoiceDetail, insertInvoice, insertInvoiceDetails, showInvoice } from "../controllers/invoice.js"
 
 const router = express.Router();
 router.get("/products", showProducts);
@@ -90,8 +39,7 @@ router.put("/cart/addNew", inserCart);
 router.put("/cart/addMore", addMoreSameItem);
 router.put("/cart/updateDetail", updateItemNumber);
 router.get("/cart/remove/:id", removeCart);
-router.delete("/cart/removeCartProduct/id", removeItem);
-router.delete("/cart/removeAllSameProduct", removeAllSameProduct);
+router.delete("/cart/removeCartProduct/:id", removeItem);
 
 router.get("/allMerchants", showAllMerchant);
 router.get("/merchants", showMerchant);

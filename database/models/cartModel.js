@@ -151,16 +151,3 @@ export const deleteItem = (id,result) => {
     }
   });
 };
-
-export const deleteAllSame= (id, result) => {
-  db.query("DELETE FROM `shoppingcartdetail` WHERE `id` = ?",
-  [id],
-  (err, results) => {
-    if (err) {
-      console.log(err);
-      result(err, null);
-    } else {
-      result(null, results);
-    }
-  });
-};

@@ -1,18 +1,4 @@
-import {
-  getCart,
-  setUserCart,
-  updateCartTotalPrice,
-  updateCartMerchant,
-  updateClearCart,
-  getCartDetail,
-  getDetail,
-  setCart,
-  updateCartSameItem,
-  updateCartNumber,
-  deleteCart,
-  deleteItem,
-  deleteAllSame,
-} from "../models/cartModel.js";
+import { getCart, setUserCart, updateCartTotalPrice, updateCartMerchant, updateClearCart, getCartDetail, getDetail, setCart, updateCartSameItem, updateCartNumber, deleteCart, deleteItem } from "../models/cartModel.js";
 
 export const showCart = (req, res) => {
   getCart ( req.params.id ,(err, results) => {
@@ -132,16 +118,6 @@ export const removeCart = (req, res) => {
 
 export const removeItem = (req, res) => {
   deleteItem( req.params.id, (err, results) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.json(results);
-    }
-  });
-};
-
-export const removeAllSameProduct = (req, res) => {
-  deleteAllSame( req.params.id, (err, results) => {
     if (err) {
       res.send(err);
     } else {
