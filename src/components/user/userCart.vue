@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-if="products.length == 0">
-      <span style="font-size: 30px; margin-left: 42%;">There is no product in cart.</span>
+    <div v-if="products.length == 0" style="margin: 4%;">
+      <span style="font-size: 30px; margin-left: 40%;">There is no product in cart.</span>
     </div>
     <div v-else >
       <div style="margin-left:16%;">
@@ -114,9 +114,9 @@ export default {
         productID: id,
       });
 
-      await axios.get("http://localhost:5000/cart/updateTotal",{
-        userID: this.cartID,
-        cartID: this.cartID,
+      await axios.put("http://localhost:5000/cart/updateTotal",{
+        userID: ID,
+        cartID: ID,
       });
 
       location.reload();
@@ -124,16 +124,21 @@ export default {
     async toDelete(name,id) {
       if(confirm("Delete " + name + " from cart??")){
         try{
-          await axios.delete(`http://localhost:5000/cart/removeCartProduct/${id}`);
+          let ID = await window.ethereum.request({method: "eth_accounts"});
 
+          await axios.delete(`http://localhost:5000/cart/removeCartProduct/${id}`);
+          
           this.getCart();
-          
-          if(this.temp.length == 0){
-            await axios.get(`http://localhost:5000/cart/remove/${id}`);
-            await axios.put(`http://localhost:5000/cart/reset/${id}`);
+
+          if(this.products.length == 0){
+            await axios.put(`http://localhost:5000/cart/reset/${ID}`);
           }
-          
-          alert("Removed");
+          await axios.put("http://localhost:5000/cart/updateTotal",{
+            userID: ID,
+            cartID: ID,
+          });
+
+          alert(name +" removed");
           location.reload();
         } catch (e){
           console.log(e);

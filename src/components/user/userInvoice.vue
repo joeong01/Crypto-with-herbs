@@ -1,5 +1,8 @@
 <template>
-    <div style="margin: 4%;">
+    <div v-if="invoices.length == 0" style="margin: 4%;">
+        <span style="font-size: 30px; margin-left: 40%;">There is no purchase history.</span>
+    </div>
+    <div v-else style="margin: 4%;">
         <div id="page-container">
             <div class="about_content">
                 <h1>Invoice</h1>
@@ -7,21 +10,21 @@
                     <CAccordionItem v-for="invoice in invoices" :key="invoice.id">
                         <CAccordionHeader><b>ID: {{ invoice.invoiceID }}</b>&emsp; Purchase by: {{ invoice.name }} &emsp;  on: {{ invoice.time }}</CAccordionHeader>
                         <CAccordionBody>
-                                <table style="margin-left:26%; width: 900px;">
+                                <table style="margin-left:21%; width: 900px;">
                                     <tr>
                                         <th width="400px">Item Name</th>
                                         <th>number</th>
                                         <th width="250px">subtotal</th>
                                     </tr>
                                 </table>
-                                <table v-for="detail in invoiceDetails" :key="detail.id" style="margin-left:20%; width: 900px;">
+                                <table v-for="detail in invoiceDetails" :key="detail.id" style="margin-left:15%; width: 900px;">
                                     <tr v-if="detail.invoiceID == invoice.invoiceID">
                                         <td>{{ detail.productName }}</td>
                                         <td>{{ detail.number }}</td>
                                         <td style="padding-left: 21%;">{{ detail.subTotal }}</td>
                                     </tr><br>
                                 </table>
-                                <table style="margin-left:26%; width: 900px;">
+                                <table style="margin-left:22%; width: 900px;">
                                     <tr><td colspan="3">Total : {{ invoice.cointype }} {{ invoice.totalprice }}</td></tr>
                                     <tr><td colspan="3">Merchant : {{ invoice.merchant }}</td></tr>
                                     <tr>

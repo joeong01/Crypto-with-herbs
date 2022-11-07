@@ -4,7 +4,7 @@
       <!--search card-->
       <div class="card shadow mt-3">
         <div class="card-header">
-          <h5>filter<CButton style="margin-left: 50%;" color="primary" shape="rounded-pill" @click="toAdd = true; selectedFundType = '-'">New</CButton></h5>
+          <h5>filter<CButton style="margin-left: 50%;" color="primary" shape="rounded-pill" @click="toAdd = true; selectedFundType = '-'; validation();">New</CButton></h5>
           <CModal size="lg" alignment="center" :visible="toAdd" @close="toAdd = false;" >
             <CModalHeader>
               <CModalTitle><span style="color: black;"><input id="Name" type="text" placeholder="Name" @change="validation()"/></span></CModalTitle>
@@ -63,7 +63,7 @@
                     <CModalHeader>
                       <CModalTitle>
                         <span style="color: black;"><input id="name" :value="item.productName" type="text" @change="checking(item.productID)"/></span>&emsp;&emsp;&emsp;&emsp;&emsp;                          
-                        <label>Enable:&emsp;  </label><input v-if="item.enable == 1" :id="item.productID + 'enable'" value="True" readonly/>
+                        <label><span style="color: black;">Enable:</span>&emsp;  </label><input v-if="item.enable == 1" :id="item.productID + 'enable'" value="True" readonly/>
                         <input v-else :id="item.productID + 'enable'" value="False" readonly/>
                       </CModalTitle>
                     </CModalHeader>
@@ -172,6 +172,8 @@ export default {
         preservation: document.getElementById("preservation").value,
         productID: id,
       });
+
+      alert("Product " + document.getElementById("name").value + " updated");
       console.log(response);
     },
     validation(){
@@ -183,36 +185,29 @@ export default {
       }
     },
     async addNew(){
-      
       let img = document.querySelector('img');
       let merchant = this.toAddMerchant;
       let canvas = document.createElement('canvas');
       canvas.width = img.clientWidth;
       canvas.height = img.clientHeight;
-
       let context = canvas.getContext('2d');
-
       context.drawImage(img, 0, 0);
-
       canvas.toBlob(async function(blob) 
       {
         await axios.post("http://localhost:5000/productCreate",{
-        productName: document.getElementById("Name").value,
-        stock: document.getElementById("Stock").value, 
-        cryptoType: document.getElementById("toAddFundType").value, 
-        price: document.getElementById("Price").value, 
-        merchantCategory: merchant, 
-        description: document.getElementById("Description").value, 
-        preservation: document.getElementById("Preservation").value,
-        image: blob,
+          productName: document.getElementById("Name").value,
+          stock: document.getElementById("Stock").value, 
+          cryptoType: document.getElementById("toAddFundType").value, 
+          price: document.getElementById("Price").value, 
+          merchantCategory: merchant, 
+          description: document.getElementById("Description").value, 
+          preservation: document.getElementById("Preservation").value,
+          image: blob,
         
-      });
-
-      await axios.put(`http://localhost:5000/merchantPlus/${merchant}`);
-
-      window.location.reload();
-
-      console.log(blob);
+        });
+        await axios.put(`http://localhost:5000/merchantPlus/${merchant}`);
+        window.location.reload();
+        console.log(blob);
       }, 'image/*');
 
     },  

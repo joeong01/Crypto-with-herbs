@@ -152,7 +152,9 @@ export default {
             }
         },
         async payment(){
-            document.getElementById("Remarks").value = "-";
+            if(document.getElementById("Remarks").value == ""){
+                document.getElementById("Remarks").value = "-";
+            }
             let hex = (this.total*10**18);
             let web3= new Web3(Web3.givenProvider);
             let account = (await web3.eth.getAccounts()).toString();
@@ -197,12 +199,10 @@ export default {
                             number: temp[o].numberProduct,
                             subTotal: temp[o].subtotal,
                         });
-
                         console.log(temps[i].productName);
                     }
                 }
             }
-
             for(let i =0; i< temps.length; i++){
                 for(let o = 0; o < temp.length; o++){
                     if(temp[o].productID == temps[i].productID){

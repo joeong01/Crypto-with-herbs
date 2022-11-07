@@ -155,7 +155,7 @@ export default {
     },
     async check(price){
       try{
-        let id = (await window.ethereum.request({method: "eth_accounts"}));
+        let id = await window.ethereum.request({method: "eth_accounts"});
         const response = await axios.get(`http://localhost:5000/cart/${id}`);
         let owner = response.data;
         if(owner[0].totalprice != 0 ){
