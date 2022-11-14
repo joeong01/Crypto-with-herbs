@@ -1,16 +1,5 @@
 import{
-  getAllMerchant,
-  getMerchant,
-  getSelectedMerchant,
-  setMerchant,
-  changeMerchant,
-  getMerchantCharge,
-  getWallet,
-  setFund,
-  clearFund,
-  setMerchantPlus,
-  setMerchantMinus,
-  silentMerchant,
+  getAllMerchant, getMerchant, getSelectedMerchant, setMerchant, changeMerchant, getMerchantCharge, getWallet, setFund, clearFund, setMerchantPlus, setMerchantMinus, silentMerchant,
 } from "../models/merchantModel.js";
 
 export const showAllMerchant = (req, res) => {

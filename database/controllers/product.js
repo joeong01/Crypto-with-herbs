@@ -1,14 +1,6 @@
 //import functions from Product model
 import {
-  getProducts,
-  getProductByMerchant,
-  getProductsByFS,
-  insertProduct,
-  updateProductStock,
-  deleteProductById,
-  changeAll,
-  changeProductStatus,
-  clearAll,
+  getProducts, getProductByMerchant, getProductsByFS, insertProduct, updateProductStock,deleteProductById, changeAll, changeProductStatus, clearAll,
 } from "../models/productModel.js";
 
 //get all products

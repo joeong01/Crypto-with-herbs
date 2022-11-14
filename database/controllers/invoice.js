@@ -1,9 +1,5 @@
 import{
-    getAllInvoice,
-    getInvoice,
-    setInvoice,
-    getInvoiceDetail,
-    setInvoiceDetails,
+     getAllInvoice, getInvoice,  setInvoice, getInvoiceDetail, setInvoiceDetails,
 } from "../models/invoiceModel.js";
 
 export const showAllInvoice = (req, res) => {

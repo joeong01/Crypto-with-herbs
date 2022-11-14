@@ -73,26 +73,32 @@ export default {
             this.merchants = (await axios.get("http://localhost:5000/allMerchants")).data;
 
             this.newID = "M" + (this.merchants.length +1);
+
         },
         async releaseFund(id, fund, category){
 
-            let hex = ((fund.toFixed(7))*10**18);
-            let web3= new Web3(Web3.givenProvider);
-            let account = (await web3.eth.getAccounts()).toString();
-            let balance = (await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18);
-            
-            await web3.eth.sendTransaction({
-                from: account,
-                to: id,
-                value: hex,
-            }).then(async function(reciept){
-                console.log(reciept);
-            });
+            if(fund != 0){
+                let hex = ((fund.toFixed(7))*10**18);
+                let web3= new Web3(Web3.givenProvider);
+                let account = (await web3.eth.getAccounts()).toString();
+                let balance = (await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18);
+                
+                await web3.eth.sendTransaction({
+                    from: account,
+                    to: id,
+                    value: hex,
+                }).then(async function(reciept){
+                    console.log(reciept);
+                });
 
-            if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != balance){
-                alert("Complete release to merchant");
-                await axios.get(`http://localhost:5000/merchant/releaseFund/${category}`);
-                window.location.reload();
+                if((await web3.eth.getBalance( (await web3.eth.getAccounts()).toString())/10**18) != balance){
+                    alert("Complete release to merchant");
+                    await axios.get(`http://localhost:5000/merchant/releaseFund/${category}`);
+                    window.location.reload();
+                }
+            }
+            else{
+                alert("No fund to release");
             }
         },
         checking(ID){
@@ -113,13 +119,13 @@ export default {
             });
 
             console.log(response);
-            alert("Updated");
+            alert(document.getElementById(ID +'name').value + " updated");
             window.location.reload();
         }, 
         async remove(ID){
             if(confirm("Are you sure wan to change the status of \"" + document.getElementById(ID+'name').value + "\"?")){
                 console.log(await axios.get(`http://localhost:5000/merchantDisable/${ID}`));
-                alert("Status Changed");
+                alert( document.getElementById(ID+'name').value  + " Status Changed");
                 window.location.reload();
             }
         },
@@ -141,8 +147,9 @@ export default {
                 fundType: document.getElementById("type").value,
                 platformCharges: document.getElementById("charge").value,
             });
-            
+            alert( document.getElementById('name').value  + " added into Database");
             console.log(temp);
+
             window.location.reload();
         }
     },

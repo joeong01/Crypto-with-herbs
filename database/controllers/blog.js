@@ -1,8 +1,5 @@
 import {
-  getBlogs,
-  insertBlog,
-  changeBlog,
-  deleteBlog,
+  getBlogs, insertBlog, changeBlog, deleteBlog,
 } from "../models/blogModel.js"
 
 export const showBlogs = (req, res) => {

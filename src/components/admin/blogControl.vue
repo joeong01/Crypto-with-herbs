@@ -77,13 +77,13 @@ export default {
                 id: ID,
             });
             console.log(response);
-            alert("Updated");
+            alert("\" "+ document.getElementById(ID+'title').value +"\" Updated");
             window.location.reload();
         },
         async remove(ID){
             if(confirm("Are you sure wan to delete \"" + document.getElementById(ID+'title').value + "\"?")){
                 console.log(await axios.put("http://localhost:5000/blog/delete",{ id: ID,}));
-                alert("Removed");
+                alert("\" "+ document.getElementById(ID+'title').value +"\" Removed");
                 window.location.reload();
             }
         },
@@ -103,7 +103,8 @@ export default {
             }));
 
             console.log(response);
-
+            alert("\" "+ document.getElementById("Title").value +"\" Added");
+            window.location.reload();
         }
     },
 };

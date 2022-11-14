@@ -21,7 +21,6 @@ export const inserUserCart = (req, res) => {
   });
 };
 
-
 export const updateTotalPrice = (req, res) => {
   const data = req.body;
   updateCartTotalPrice( data, (err, results) => {
